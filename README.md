@@ -8,16 +8,19 @@ Requirements :
 * nginx 
 * Django 1.11.29
 
-To start the dev server :
+To start the dev server ::
 
- $ sudo mkdir /etc/janeway
- $ sudo mv djangorc /etc/janeway/
- $ source /etc/janeway/djangorc
- $ debug.sh manage runserver localhost:8133 
+    $ sudo mkdir /etc/janeway
+
+    $ sudo mv djangorc /etc/janeway/
+ 
+    $ source /etc/janeway/djangorc
+ 
+    $ debug.sh manage runserver localhost:8133 
 
 To start the uWSGI backend :
 
- $ sh -x ./runserver.sh & 
+    $ sh -x ./runserver.sh & 
 
 Contact :
 
