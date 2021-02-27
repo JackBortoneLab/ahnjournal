@@ -1,0 +1,5 @@
+src/transform/cassius/bin/*
+__pycache__
+.pyc
+.swp
+src/logs

@@ -1,0 +1,21 @@
+{% extends "admin/core/base.html" %}
+{% load static from staticfiles %}
+{% load foundation %}
+{% load i18n %}
+{% load field %}
+
+{% block title-section %}{% trans "Article Info" %}{% endblock %}
+
+{% block css %}
+    <link href="{% static 'admin/css/timeline.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+<article>
+	<div class="box">
+	 {% include "submission/timeline.html" with data=article %}
+	 <p>Total donated: {{ amount }}</p>
+	 <p>Funds: {{ article.funding_total }}</p>
+	</div>
+</article>
+{% endblock %}

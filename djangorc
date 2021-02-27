@@ -1,0 +1,26 @@
+#export PYTHONHOME=/usr/local # pypy?
+
+export ROOTDIR=/home/www/janeway-dev
+export DJANGO_HOME=/home/erob/ncvs/django
+export BINDIR="$ROOTDIR/bin"
+export LIBDIR="$ROOTDIR/src"
+export TESTDIR="/home/erob/src/django-hotsauce-1.0-mainline/tests"
+export PYTHON=python3
+export PYTHONPATH="$ROOTDIR:$LIBDIR:$LIBDIR/janeway:$DJANGO_HOME"
+export PYTHONFLAGS= # -Wall
+#export PYTHONVERBOSE="1" 
+#export PATH="$PATH:$DJANGO_HOME/django/bin"
+export PYTHONIOENCODING="UTF-8"
+export PYTHONHASHSEED=random
+export DJANGO_SETTINGS_MODULE=local_settings
+export JANEWAY_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
+export DJANGO_USE_SYSLOG=1
+export DB_VENDOR=mariadb
+export DB_NAME=ahnjournal-dev
+export DB_HOST=localhost
+export DB_PORT=3307
+export DB_PASSWORD=
+export DB_USER=ahnjournal
+# schevo
+export SCHEVO_OPTIMIZE=0 # set this to 0 for python 3
+export SCHEVO_GTK_AVAILABLE=0

@@ -1,0 +1,87 @@
+{% extends "admin/core/base.html" %}
+
+{% block title %}Articles in Review{% endblock %}
+
+{% block breadcrumbs %}
+{{ block.super }}
+{% include "elements/breadcrumbs/review_base.html" %}
+{% endblock breadcrumbs %}
+
+{% block body %}
+<div class="large-12 columns">
+    <div class="box">
+        <div class="title-area">
+            <h2>Articles in Review</h2>
+            {% if filter == 'me' %}<a class="button" href="{% url 'review_home' %}?filter=all">All Submissions</a>{% else %}<a class="button" href="{% url 'review_home' %}?filter=me">My Assignments</a>{% endif %}
+        </div>
+        <div class="content">
+            <table class="small scroll" id="unassigned">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th style="width: 25%">Title</th>
+                        <th>Submitted</th>
+                        <th>Main Author</th>
+                        <th>Editors</th>
+                        <th>Section</th>
+                        <th>Projected Issue</th>
+                        {% if journal_settings.general.enable_expanded_review_details %}
+                        <th>Review Status</th>
+                        {% else %}
+                        <th>No. Complete Reviews</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for article in articles %}
+                    <tr>
+                        <td>{{ article.pk }}</td>
+                        <td><a href="{% url 'review_in_review' article.pk %}">{{ article.title }}</a></td>
+                        <td>{{ article.date_submitted }}</td>
+                        <td>{{ article.correspondence_author.full_name }}</td>
+                        <td>{% for editor in article.editors %}{{ editor.editor.full_name }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+                        <td>{{ article.section.name }}</td>
+                        <td>{% if article.projected_issue %}{{ article.projected_issue.display_title }}{% else %}None{% endif %}</td>
+                        {% if journal_settings.general.enable_expanded_review_details %}
+                        <td>
+                            {% if article.active_reviews %}
+
+                                <table style="width:100%; min-width:230px;" class="table table-stack small no-pad no-bottom-margin">
+                                    {% for review in article.reviewassignment_set.all %}
+
+                                        <tr>
+                                            <td><a href="{% url 'review_view_review' article.pk review.pk %}">{{ review.reviewer.initials }}</a></td>
+                                            <td><span class="{{ review.status.span_class }}">{{ review.status.display|safe }}</span></td>
+                                            <td>{{ review.status.date }}</td>
+                                            <td>{% if review.status.reminder %}<a href="{% url 'review_send_reminder' article.pk review.pk review.status.reminder %}">{% endif %}Due {{ review.date_due|date:"d-m" }}{% if review.status.reminder %}</a>{% endif %}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            {% endif %}
+                        </td>
+                        {% else %}
+                        <td>{{ article.completed_reviews|length }} Complete</td>
+                        {% endif %}
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td>No articles in this stage</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock body %}
+
+{% block js %}
+{% include "elements/datatables.html" with target="#unassigned" %}
+{% endblock js %}

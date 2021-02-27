@@ -1,0 +1,2 @@
+1. opengraph.py templatetags with custom settings ENABLE_OPENGRAPH=True
+2. debug middleware issue core/middleware.py
