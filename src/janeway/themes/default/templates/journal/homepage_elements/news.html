@@ -9,7 +9,7 @@
             <div class="row">
                 {% for item in news_items %}
                     <div class="col-md-6">
-                        <h5>{{ item.title }}</h5>
+                        <h2 class="feature">{{ item.title }}</h2>
                         <h6><strong>{% trans "Posted by" %} {{ item.posted_by.full_name }}
                             on {{ item.posted|date:"Y-m-d" }}</strong></h6>
                         <p>{{ item.body|striptags|truncatesmart:400 }}</p>

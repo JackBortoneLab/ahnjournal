@@ -423,7 +423,7 @@ def serve_file_to_browser(file_path, file_to_serve, public=False,
 
     response['Content-Length'] = os.path.getsize(file_path)
     if public:
-        response['Content-Disposition'] = 'attachment; filename="{0}"'.format(file_to_serve.public_download_name())
+        response['Content-Disposition'] = 'attachment; filename="{0}"'.format(file_to_serve)
     elif hide_name:
         response['Content-Disposition'] = 'attachment; filename="{0}"'.format(
             file_to_serve.uuid_filename,

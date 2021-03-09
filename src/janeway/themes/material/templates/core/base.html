@@ -22,19 +22,14 @@
         <link rel="icon" href="{{ journal.favicon.url }}" type="image/vnd.microsoft.icon"/>{% endif %}
     
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet"> 
-
+   
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
     
     <link rel="stylesheet" href="{% static "material/mat.css" %}">
+ <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet"> 
 
-    {% if request.journal %}
-        <link href="{% static "material/css/journal" %}{{ request.journal.id }}_override.css" rel="stylesheet">
-   {% else %}
-        <link href="{% static "material/css/press_override.css" %}" rel="stylesheet">
-    {% endif %}
     <link href="{% static "common/css/common.css" %}" rel="stylesheet">
-
+    <link href="{% static "material/ui-style.css" %}" rel="stylesheet">
 
     <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="{% url 'rss_articles' %}"/>
 
@@ -44,10 +39,6 @@
     <meta name="twitter:card" content="summary_large_image"/>
 
     {% block opengraph %}
-    <meta name="og:title" content="{{ request.journal.name }}"/>
-    <meta name="og:description" content="{{ request.journal.name }}"/>
-    <meta name="og:url" content="/ahnjournal{{ request.path_info }}"/>
-    <meta name="og:image" content="https://open-neurosecurity.org/media/img/cover2.jpg"/>
     {% endblock opengraph %}
 
 </head>

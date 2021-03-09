@@ -6,6 +6,10 @@
 
 {% block title %}{{ article.title }}{% endblock %}
 
+{% block opengraph %}
+{% include "elements/social_meta.html" %}
+{% endblock %}
+
 {% block body %}
 
     <div class="row">

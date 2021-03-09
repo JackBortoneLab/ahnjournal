@@ -1,6 +1,13 @@
 {% extends "core/base.html" %}
 
-{% block title %}{{ request.press.name }} Preprints{% endblock %}
+{% block title %}{{ request.journal.name }} Preprints{% endblock %}
+
+{% block opengraph %}
+<meta name="og:title" content="{{ request.journal.name }} Preprints"/>
+<meta name="og:description" content="{{ request.journal.name }} Preprints"/>
+<meta name="og:url" content="/ahnjournal/preprints/"/>
+<meta name="og:image" content="https://open-neurosecurity.org/media/img/cover2.jpg"/>
+{% endblock %}
 
 {% block body %}
     <div class="row">

@@ -1,6 +1,13 @@
 {% extends "core/base.html" %}
 {% load truncate %}
 
+{% block opengraph %}
+ <meta name="og:title" content="{{ request.journal.name }}"/>
+ <meta name="og:description" content="{{ request.journal.name }}"/>
+ <meta name="og:url" content="/ahnjournal{{ request.path_info }}"/>
+ <meta name="og:image" content="https://open-neurosecurity.org/media/img/cover2.jpg"/>
+{% endblock %}
+
 {% block body %}
 
     {% for element in homepage_elements %}

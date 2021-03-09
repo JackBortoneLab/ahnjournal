@@ -42,6 +42,8 @@ urlpatterns = [
     url(r'^repository/', include('preprint.urls')),
     url(r'^utils/', include('utils.urls')),
     url(r'^workflow/', include('workflow.urls')),
+    #newsletter
+    url(r'^newsletter/', include('newsletter.urls')),
 
     # Root Site URLS
     url(r'^$', press_views.index, name='website_index'),

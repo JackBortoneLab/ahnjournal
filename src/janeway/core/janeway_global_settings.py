@@ -80,9 +80,13 @@ INSTALLED_APPS = [
     'materialize',
     'snowpenguin.django.recaptcha2',
     'simplemathcaptcha',
+    'towel',
 
     # Forms
     'django.forms',
+
+    # newsletter
+    'newsletter'
 ]
 
 INSTALLED_APPS += plugin_installed_apps.load_plugin_apps(BASE_DIR)
