@@ -1,12 +1,11 @@
 {% load i18n %}
 
-<div class="row" id="about_journal">
+<div class="row">
     <div class="col m12">
-        <div class="card">
-            <div class="card-content">
-                <span class="card-title">{{ title_value }}</span>
-                <p>{{ journal_settings.general.journal_description|safe }}</p>
-            </div>
-        </div>
-    </div>
+       <div class="card" id="about_journal">
+       <div class="card-content">
+           <h2 class="feature">{{ title_value }}</h2>
+           <p>{{ journal_settings.general.journal_description|safe }}</p>
+       </div>
+     </div>
 </div>

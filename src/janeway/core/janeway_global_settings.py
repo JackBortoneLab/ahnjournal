@@ -1,8 +1,4 @@
-#!/usr/bin/env python -W ignore::DeprecationWarning
-__copyright__ = "Copyright 2017 Birkbeck, University of London"
-__author__ = "Martin Paul Eve & Andy Byers"
-__license__ = "AGPL v3"
-__maintainer__ = "Birkbeck Centre for Technology and Publishing"
+#!/usr/bin/env python 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
@@ -11,11 +7,16 @@ import logging
 
 from django.contrib import messages
 
-from core import plugin_installed_apps
+import janeway.core.plugin_installed_apps as plugin_installed_apps
 
 #TODO: use djangorc here
-BASE_DIR = os.path.join(os.environ['ROOTDIR'], 'src/janeway')
+ROOTDIR = os.environ.get('ROOTDIR', '/home/www/ahnjournal-devel')
+BASE_DIR = os.path.join(ROOTDIR, 'src/janeway')
 PROJECT_DIR = os.path.dirname(BASE_DIR)
+
+JOURNAL_CODE = 'ahnjournal'
+ENABLE_PRESS_MIDDLEWARE = False
+
 sys.path.append(os.path.join(BASE_DIR, "plugins"))
 
 # Quick-start development settings - unsuitable for production
@@ -23,7 +24,7 @@ sys.path.append(os.path.join(BASE_DIR, "plugins"))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # You should change this key before you go live!
-SECRET_KEY = 'uxprsdhk^gzd-r=_2zzaqq23yolxn)$k6tsd8_cepl^s^tms2w1qrv'
+SECRET_KEY = 'uxprsdslddk^gzd-r=_2zzaqq23yolxn)$k6tsd8_cepl^s^tms2w1qrv'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -31,7 +32,7 @@ COMMAND = sys.argv[1:]
 IN_TEST_RUNNER = COMMAND[:1] == ['test']
 ALLOWED_HOSTS = ['*']
 
-ENABLE_TEXTURE = False
+ENABLE_TEXTURE = True
 
 FILE_UPLOAD_PERMISSIONS = 0o644
 
@@ -66,8 +67,9 @@ INSTALLED_APPS = [
     'submission',
     'transform',
     'utils',
-    'install',
+    #'install',
     'workflow',
+    'webinar',
 
     # 3rd Party
     'django_summernote',
@@ -78,7 +80,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'foundationform',
     'materialize',
-    'snowpenguin.django.recaptcha2',
+    #'snowpenguin.django.recaptcha2',
     'simplemathcaptcha',
     'towel',
 
@@ -86,7 +88,7 @@ INSTALLED_APPS = [
     'django.forms',
 
     # newsletter
-    'newsletter'
+    #'newsletter'
 ]
 
 INSTALLED_APPS += plugin_installed_apps.load_plugin_apps(BASE_DIR)
@@ -105,7 +107,7 @@ MIDDLEWARE_CLASSES = (
     'janeway.core.middleware.SiteSettingsMiddleware',
     'janeway.utils.template_override_middleware.ThemeEngineMiddleware',
     'janeway.core.middleware.MaintenanceModeMiddleware',
-    'janeway.cron.middleware.CronMiddleware',
+    #'janeway.cron.middleware.CronMiddleware',
     'janeway.core.middleware.CounterCookieMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'janeway.core.middleware.PressMiddleware',
@@ -137,6 +139,7 @@ TEMPLATES = [
                 'janeway.core.context_processors.press',
                 'janeway.core.context_processors.active',
                 'janeway.core.context_processors.navigation',
+                'janeway.core.context_processors.date',
                 'django_settings_export.settings_export',
                 'django.template.context_processors.i18n'
             ],
@@ -152,7 +155,7 @@ TEMPLATES = [
     },
 ]
 
-FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
+#FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
 
 SETTINGS_EXPORT = [
     'ORCID_API_URL',
@@ -160,7 +163,7 @@ SETTINGS_EXPORT = [
     'ORCID_CLIENT_SECRET',
     'ORCID_CLIENT_ID',
     'ORCID_URL',
-    'ENABLE_ENHANCED_MAILGUN_FEATURES',
+#    'ENABLE_ENHANCED_MAILGUN_FEATURES',
     'ENABLE_ORCID',
     'DEBUG',
     'LANGUAGE_CODE',
@@ -210,17 +213,14 @@ else:
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
-
 LANGUAGE_CODE = 'en'
 TIME_ZONE = 'UTC'
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'core', 'locales')
 ] + plugin_installed_apps.load_plugin_locales(BASE_DIR)
 
-
 def ugettext(s):
     return s
-
 
 LANGUAGES = (
     ('en', ugettext('English')),
@@ -231,18 +231,17 @@ LANGUAGES = (
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = 'https://open-neurosecurity.org/media/'
 
-USE_I18N = True
+USE_I18N = False
 USE_L10N = False
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 STATIC_ROOT = os.path.join(BASE_DIR, 'collected-static')
-STATICFILES_DIRS = (
+STATICFILES_DIRS = [
     # The /src/static/ folder is used by Janeway and should not be removed.
     os.path.join(BASE_DIR, 'static'),
-)
+    ]
 STATIC_URL = 'https://open-neurosecurity.org/static/'
 
 if ENABLE_TEXTURE:
@@ -250,7 +249,7 @@ if ENABLE_TEXTURE:
 
 SUMMERNOTE_CONFIG = {
     # Using SummernoteWidget - iframe mode
-    'iframe': False,  # or set False to use SummernoteInplaceWidget - no iframe mode
+    'iframe': True,  # or set False to use SummernoteInplaceWidget - no iframe mode
 
     # Using Summernote Air-mode
     'airMode': False, 
@@ -277,55 +276,6 @@ SILENCED_SYSTEM_CHECKS = (
     'fields.W340',
 )
 
-'''
-# This section should only be enabled if you intend to use Sentry for error reporting.
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'root': {
-        'level': 'WARNING',
-        'handlers': ['sentry'],
-    },
-    'formatters': {
-        'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s '
-                      '%(process)d %(thread)d %(message)s'
-        },
-    },
-    'handlers': {
-        'sentry': {
-            'level': 'ERROR', # To capture more than ERROR, change to WARNING, INFO, etc.
-            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
-            'tags': {'custom-tag': 'x'},
-        },
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
-        }
-    },
-    'loggers': {
-        'django.db.backends': {
-            'level': 'ERROR',
-            'handlers': ['console'],
-            'propagate': False,
-        },
-        'raven': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-            'propagate': False,
-        },
-        'sentry.errors': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-            'propagate': False,
-        },
-    },
-}
-RAVEN_CONFIG = {
-    'dsn': '',
-}
-'''
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -362,7 +312,7 @@ LOGGING = {
             'class': 'logging.handlers.RotatingFileHandler',
             'maxBytes': 1024*1024*50,  # 50 MB
             'backupCount': 1,
-            'filename': os.path.join(PROJECT_DIR , 'logs/janeway.log'),
+            'filename': '/var/log/janeway.log',
             'formatter': 'default'
         },
     },
@@ -374,7 +324,6 @@ LOGGING = {
         },
     },
 }
-
 
 class SuppressDeprecated(logging.Filter):
     def filter(self, record):
@@ -400,91 +349,68 @@ EMAIL_PORT = '25'
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = False
-DUMMY_EMAIL_DOMAIN = "@open-neurosecurity.org"
+DUMMY_EMAIL_DOMAIN = "@example.com"
 
 # Settings for use with Mailgun
-MAILGUN_ACCESS_KEY = ''
-MAILGUN_SERVER_NAME = ''
-MAILGUN_REQUIRE_TLS = False
-ENABLE_ENHANCED_MAILGUN_FEATURES = False  # Enables email tracking
-
+#MAILGUN_ACCESS_KEY = ''
+#MAILGUN_SERVER_NAME = ''
+#MAILGUN_REQUIRE_TLS = False
+#ENABLE_ENHANCED_MAILGUN_FEATURES = False  # Enables email tracking
 
 DATE_FORMT = "Y-m-d"
 DATETIME_FORMAT = "Y-m-d H:i"
-
 AUTH_USER_MODEL = 'core.Account'
 
-PLUGIN_HOOKS = {}
-
+#PLUGIN_HOOKS = {}
 NOTIFY_FUNCS = []
+#JANEWAY_CRONJOBS = []
 
 ENABLE_ORCID = True
 ORCID_API_URL = 'http://pub.orcid.org/v1.2_rc7/'
 ORCID_URL = 'https://orcid.org/oauth/authorize'
 ORCID_TOKEN_URL = 'https://pub.orcid.org/oauth/token'
-ORCID_CLIENT_SECRET = ''
-ORCID_CLIENT_ID = ''
-
+ORCID_CLIENT_SECRET = '4198cf6d-cc09-4757-8fa4-186a720b5f51'
+ORCID_CLIENT_ID = 'APP-5IWTN5G13WHTGGBM'
 
 SESSION_COOKIE_NAME = 'JANEWAYSESSID'
-SESSION_SAVE_EVERY_REQUEST = True
+SESSION_SAVE_EVERY_REQUEST = False
 
-S3_ACCESS_KEY = ''
-S3_SECRET_KEY = ''
-S3_BUCKET_NAME = ''
-END_POINT = 'eu-west-2'  # eg. eu-west-1
-S3_HOST = 's3.eu-west-2.amazonaws.com'  # eg. s3.eu-west-1.amazonaws.com
+#S3_ACCESS_KEY = ''
+#S3_SECRET_KEY = ''
+#S3_BUCKET_NAME = ''
+#END_POINT = 'eu-west-2'  # eg. eu-west-1
+#S3_HOST = 's3.eu-west-2.amazonaws.com'  # eg. s3.eu-west-1.amazonaws.com
+#BACKUP_TYPE = 'directory'  # s3 or directory
+#BACKUP_DIR = '/path/to/backup/dir/'
+#BACKUP_EMAIL = False  # If set to True, will send an email each time backup is run
 
-BACKUP_TYPE = 'directory'  # s3 or directory
-BACKUP_DIR = '/path/to/backup/dir/'
-BACKUP_EMAIL = False  # If set to True, will send an email each time backup is run
-
-URL_CONFIG = 'path'  # path or domain
+URL_CONFIG = 'path'  # XXX path or domain
 
 # Captcha
 # You can get reCaptcha keys for your domain here: https://developers.google.com/recaptcha/intro
 # You can set either to use Google's reCaptcha or a basic math field with no external requirements
 
 CAPTCHA_TYPE = 'simple_math'  # should be either 'simple_math' or 'recaptcha' to enable captcha fields otherwise disabled
-RECAPTCHA_PRIVATE_KEY = '' # Public and private keys are required when using recaptcha
-RECAPTCHA_PUBLIC_KEY = ''
+#RECAPTCHA_PRIVATE_KEY = '' # Public and private keys are required when using recaptcha
+#RECAPTCHA_PUBLIC_KEY = ''
 
-BOOTSTRAP4 = {
-    'required_css_class': 'required',
-}
+#BOOTSTRAP4 = {
+#    'required_css_class': 'required',
+#}
 
+SUMMERNOTE_THEME = 'bs4'
+
+#Deprecated settings
 #SILENT_IMPORT_CACHE = True
-
-WORKFLOW_PLUGINS = {}
-
-SILENT_IMPORT_CACHE = True
-
+#WORKFLOW_PLUGINS = {}
+#SILENT_IMPORT_CACHE = True
 # Default timeout for outgoing HTTP connections
-HTTP_TIMEOUT_SECONDS = 0
-
+#HTTP_TIMEOUT_SECONDS = 0
 # New XML galleys will be associated with this stylesheet by default when they
 # are first uploaded
-DEFAULT_XSL_FILE_LABEL = 'Janeway default (1.3.8)'
+#DEFAULT_XSL_FILE_LABEL = 'Janeway default (1.3.8)'
 
-# Testing Overrides
-if IN_TEST_RUNNER and COMMAND[1:2] != ["--keepdb"]:
-    from collections.abc import Mapping
-
-
-    class SkipMigrations(Mapping):
-        def __getitem__(self, key):
-            return None
-
-        def __contains__(self, key):
-            return True
-
-        def __iter__(self):
-            return iter("")
-
-        def __len__(self):
-            return 1
-
-    logging.info("Skipping migrations")
-    logging.disable(logging.CRITICAL)
-    MIGRATION_MODULES = SkipMigrations()
+# Twitter API settings imported from mainapp.config.global_settings.py
+TWITTER_API_KEY = 'KMJIFslk9yP1Nj8N29PUj3Mz6' # CLIENT_ID
+TWITTER_API_SECRET_KEY = '0yTzEGMU6wKNkkU0xwiSlXu4suJ1Wh6S5RqYnwoNPFb64uWU7b'
 

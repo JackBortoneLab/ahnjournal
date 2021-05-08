@@ -1,0 +1,80 @@
+{% extends "core/base.html" %}
+
+{% load static from staticfiles %}
+{% load press_url from press_url %}
+{% load svg from press_url %}
+
+{% block title %}{% if request.journal %}{{ journal.name }}{% else %}{{ request.press.name }}
+    {% endif %}
+{% endblock title %}
+
+{% block head %}
+    <link href="{% static "admin/css/app.css" %}" rel="stylesheet">
+    <link href="{% static "admin/css/admin.css" %}" rel="stylesheet">
+    <link href="{% static "common/css/font-awesome.css" %}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
+    <link href="https://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css" rel="stylesheet">
+    <link href="{% static "common/css/jq-ui.css" %}" rel="stylesheet" rel="stylesheet">
+
+    {% if journal.favicon %}
+        <link rel="icon" href="{{ journal.favicon.url }}" type="image/vnd.microsoft.icon"/>
+    {% elif press.favicon %}
+        <link rel="icon" href="{{ press.favicon.url }}" type="image/vnd.microsoft.icon"/>
+    {% endif %}
+{% endblock head %}
+
+
+{% block breadcrumbs %}
+{% if request.journal %}
+<li><a href="{% url 'core_dashboard' %}">Dashboard</a></li>
+{% endif %}
+{% endblock breadcrumbs %}
+
+{% block js %}
+<script src="https://use.typekit.net/lff8ikn.js"></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML'></script>
+<script src="{% static "admin/js/app.min.js" %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+<script>
+try {
+        Typekit.load({async: true});
+    } catch (e) {
+}</script>
+
+
+<script>
+    toastr.options = {
+        "closeButton": true,
+        "debug": true,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-bottom-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "20000",
+        "hideDuration": "3000",
+        "timeOut": "8000",
+        "extendedTimeOut": "60000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+    {% for message in messages %}
+        {% ifequal message.tags "warning" %}
+            toastr.warning("{{ message|linebreaksbr }}");
+        {% endifequal%}
+        {% ifequal message.tags "info" %}
+            toastr.info("{{ message|linebreaksbr }}");
+        {% endifequal%}
+        {% ifequal message.tags "danger" %}
+            toastr.error("{{ message|linebreaksbr }}");
+        {% endifequal%}
+        {% ifequal message.tags "success" %}
+            toastr.success("{{ message|linebreaksbr }}")
+        {% endifequal%}
+    {% endfor %}
+</script>
+
+{% endblock js %}

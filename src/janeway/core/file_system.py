@@ -1,11 +1,3 @@
-"""
-Janeway's File System classes
-"""
-__copyright__ = "Copyright 2018 Birkbeck, University of London"
-__author__ = "Birkbeck Centre for Technology and Publishing"
-__license__ = "AGPL v3"
-__maintainer__ = "Birkbeck Centre for Technology and Publishing"
-
 import os
 
 from django.conf import settings

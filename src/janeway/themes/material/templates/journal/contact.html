@@ -1,12 +1,12 @@
 {% extends "core/base.html" %}
 {% load i18n %}
 {% load materialize %}
-{% load recaptcha2 %}
+
 
 {% block title %}{% trans "Contact" %}{% endblock %}
 
 {% block head %}
-    {% recaptcha_init %}
+{# {% recaptcha_init %} #}
 {% endblock %}
 
 {% block body %}
@@ -63,3 +63,4 @@
         });
     </script>
 {% endblock %}
+

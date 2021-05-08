@@ -1,0 +1,37 @@
+{% load svg from press_url %}
+{% load truncate %}
+{% load i18n %}
+
+<section>
+    <div class="row">
+        <div class="col m12">
+                <h2>{% trans "Recent news" %}</h2>
+                {% for item in news_items %}
+                    <div class="card ui-generic">
+                        <h2 class="feature card-title">{{ item.title }}</h2>
+                        <h6>{% trans "Posted by" %} {{ item.posted_by.full_name }} on
+                            {{ item.posted|date:"Y-m-d" }}</h6>
+                        <div class="card-content">{{ item.body|striptags|truncatesmart:400 }}</div>
+                    <div class="card-action">
+                        <a href="{% url 'core_news_item' item.pk %}">{% trans "Read More" %}</a>
+                    </div>
+		    </div>
+                {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section>
+     <div class="row">
+        <div class="col m12">
+
+        <h2>Recent Twitter Updates</h2>
+        <ul class="colorList">
+        {% for tweet in public_timeline %}
+        <li>
+            <a href="https://twitter.com/twitter/statuses/{{tweet.id}}">{{tweet.text}}</a></li>
+        {% endfor %}
+        </ul>
+        </div>
+     </div>
+</section>

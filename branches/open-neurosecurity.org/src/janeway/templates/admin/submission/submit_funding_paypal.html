@@ -1,0 +1,42 @@
+{% extends "admin/core/base.html" %}
+{% load static from staticfiles %}
+{% load foundation %}
+{% load i18n %}
+{% load field %}
+
+{% block title-section %}{% trans "Article Funding" %}{% endblock %}
+
+{% block css %}
+    <link href="{% static 'admin/css/timeline.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+<article>
+	<div class="box">
+		 {% include "submission/timeline.html" with data=article %}
+<form action="https://www.paypal.com/donate" method="post" target="_top">
+Amount to donate: <input type="input" name="amount" value=""/>	
+{% comment %}
+<input type="hidden" name="hosted_button_id" value="RTU5SPUR6L6YG" />
+{% endcomment %}
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+<img alt="" border="0" src="https://www.paypal.com/en_CA/i/scr/pixel.gif" width="1" height="1" />
+<input type="hidden" name="cmd" value="_donations"/>
+<input type="hidden" name="business" value="tkadm30@yandex.com"/>
+<input type="hidden" name="rm" value="2"/>
+<input type="hidden" name="return" value="."/>
+
+<p>Total Funds: {{ article.funding_total }}</p>
+
+</form>
+	</div>
+<div class="box">
+<form method="POST">
+                        <button class="button success pull-right" type="submit" name="next_step"><i class="fa fa-check">
+                            &nbsp;</i>{% trans "Continue" %}
+                        </button>
+			<br>
+                    </form>
+	</div>
+</article>
+{% endblock %}

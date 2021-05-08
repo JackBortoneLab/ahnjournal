@@ -342,6 +342,7 @@ a:hover .article-title {
 .feature-article-image {
     width: 100%;
     object-fit: cover;
+    min-height: 360px;
 }
 
 .feature-article-card {

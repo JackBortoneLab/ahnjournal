@@ -1,12 +1,11 @@
 {% extends "core/base.html" %}
 {% load i18n %}
-{% load recaptcha2 %}
 {% load orcid %}
 
 {% block title %}{% trans "Login" %}{% endblock title %}
 
 {% block head %}
-    {% recaptcha_init %}
+{# {% recaptcha_init %} #}
 {% endblock %}
 
 {% block body %}

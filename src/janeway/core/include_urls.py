@@ -1,15 +1,10 @@
-__copyright__ = "Copyright 2017 Birkbeck, University of London"
-__author__ = "Martin Paul Eve & Andy Byers"
-__license__ = "AGPL v3"
-__maintainer__ = "Birkbeck Centre for Technology and Publishing"
-
 import os
 
 from django.conf.urls import include, url
 from django.conf import settings
 from django.views.i18n import JavaScriptCatalog
 from django.views.decorators.cache import cache_page
-
+from django.contrib import admin
 from journal import urls as journal_urls
 from core import views as core_views, plugin_loader
 from utils import notify
@@ -19,6 +14,7 @@ from submission import views as submission_views
 from journal import views as journal_views
 
 urlpatterns = [
+    url(r'^admin/', include(admin.site.urls)),
     url(r'^submit/', include('submission.urls')),
     url(r'', include(journal_urls)),
     url(r'^review/', include('review.urls')),
@@ -32,7 +28,7 @@ urlpatterns = [
     url(r'^rss/', include('rss.urls')),
     url(r'^feed/', include('rss.urls')),
     url(r'^cron/', include('cron.urls')),
-    url(r'^install/', include('install.urls')),
+    #url(r'^install/', include('install.urls')),
     url(r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^api/', include('api.urls')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
@@ -40,15 +36,21 @@ urlpatterns = [
     url(r'^reports/', include('reports.urls')),
     url(r'^preprints/', include('preprint.urls')),
     url(r'^repository/', include('preprint.urls')),
-    url(r'^utils/', include('utils.urls')),
+    #url(r'^utils/', include('utils.urls')),
     url(r'^workflow/', include('workflow.urls')),
     #newsletter
-    url(r'^newsletter/', include('newsletter.urls')),
+    #url(r'^newsletter/', include('newsletter.urls')),
+
+    #metrics
+    #url(r'^metrics/', include('metrics.urls')),
+
+    #webinar
+    #url(r'^webinar/', include('webinar.urls')),
 
     # Root Site URLS
     url(r'^$', press_views.index, name='website_index'),
-    url(r'^journals/$', press_views.journals, name='press_journals'),
-    url(r'^conferences/$', press_views.conferences, name='press_conferences'),
+    #url(r'^journals/$', press_views.journals, name='press_journals'),
+    #url(r'^conferences/$', press_views.conferences, name='press_conferences'),
     url(r'^kanban/$', core_views.kanban, name='kanban'),
     url(r'^login/$', core_views.user_login, name='core_login'),
     url(r'^login/orcid/$', core_views.user_login_orcid, name='core_login_orcid'),
@@ -185,7 +187,7 @@ urlpatterns = [
     # Public Profiles
     url(r'profile/(?P<uuid>[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})/$', core_views.public_profile, name='core_public_profile'),
 
-    url(r'^sitemap/$', journal_views.sitemap, name='journal_sitemap'),
+    url(r'^sitemap.xml$', journal_views.sitemap, name='journal_sitemap'),
 
     url(r'^download/file/(?P<file_id>\d+)/$', journal_views.download_journal_file, name='journal_file'),
 
@@ -212,29 +214,30 @@ if blocks:
 
 # Plugin Loading
 # TODO: plugin_loader should handle the logic below
-plugins = plugin_loader.load()
-
-if plugins:
-    for plugin in plugins:
-        try:
-            urlpatterns += [
-                url(r'^plugins/{0}/'.format(plugin.best_name()), include('plugins.{0}.urls'.format(plugin.name))),
-            ]
-            if settings.DEBUG:
-                print("Loaded URLs for {0}".format(plugin.name))
-        except ImportError as e:
-            print("Error loading a plugin: {0}, {1}".format(plugin.name, e))
-            pass
+#plugins = plugin_loader.load()
+#
+#if plugins:
+#    for plugin in plugins:
+#        try:
+#            urlpatterns += [
+#                url(r'^plugins/{0}/'.format(plugin.best_name()), include('plugins.{0}.urls'.format(plugin.name))),
+#            ]
+#            if settings.DEBUG:
+#                print("Loaded URLs for {0}".format(plugin.name))
+#        except ImportError as e:
+#            print("Error loading a plugin: {0}, {1}".format(plugin.name, e))
+#            pass
 
 # load the notification plugins
-if len(settings.NOTIFY_FUNCS) == 0:
-    plugins = notify.load_modules()
-    frameworks = []
-
-    for key, val in plugins.items():
-        if hasattr(val, 'notify_hook'):
-            settings.NOTIFY_FUNCS.append(val.notify_hook)
+#if len(settings.NOTIFY_FUNCS) == 0:
+#    plugins = notify.load_modules()
+#    frameworks = []
+#
+#    for key, val in plugins.items():
+#        if hasattr(val, 'notify_hook'):
+#            settings.NOTIFY_FUNCS.append(val.notify_hook)
 
 urlpatterns += [
-    url(r'^site/(?P<page_name>.*)/$', cms_views.view_page, name='cms_page'),
+    url(r'^about/$', cms_views.view_index, name='cms_site_index'),
+    url(r'^about/(?P<page_name>.*)/$', cms_views.view_page, name='cms_page'),
 ]

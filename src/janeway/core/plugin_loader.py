@@ -62,7 +62,7 @@ def load(directory="plugins", prefix="plugins", permissive=False):
             register_for_events(plugin_settings)
 
     # Register plugin hooks
-    if settings.PLUGIN_HOOKS:
+    if 'PLUGIN_HOOKS' in settings.__dict__:
         super_hooks = settings.PLUGIN_HOOKS
     else:
         settings.PLUGIN_HOOKS = {}

@@ -7,7 +7,7 @@ ulimit -n 1024
 export PATH="/bin:/usr/bin:/usr/local/bin"
 
 # Include system config if it exists
-[ -r /etc/janeway/djangorc ] && . /etc/janeway/djangorc
+[ -r /etc/janeway/djangorc.devel ] && . /etc/janeway/djangorc.devel
 
 FIND=/usr/bin/find
 HTTPSERVER=/usr/local/bin/httpserver.py

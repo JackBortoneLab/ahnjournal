@@ -11,8 +11,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}{{ request.journal.name }}{% endblock title %}</title>
     {% block head %}{% endblock head %}
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
-          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     {% block css %}{% endblock %}
     <link href="{% journal_url 'rss_articles' %}" type="application/atom+xml" rel="alternate"
           title="Article Feed for Journal">
@@ -20,28 +18,28 @@
           title="News Feed for Journal">
     {% if journal.favicon %}
         <link rel="icon" href="{{ journal.favicon.url }}" type="image/vnd.microsoft.icon"/>{% endif %}
-    
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
    
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
-    
-    <link rel="stylesheet" href="{% static "material/mat.css" %}">
- <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet"> 
 
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet"> 
     <link href="{% static "common/css/common.css" %}" rel="stylesheet">
     <link href="{% static "material/ui-style.css" %}" rel="stylesheet">
+    <link href="{% static "material/mat.css" %}" rel="stylesheet">
+    <link href="{% static "common/css/jquery-te-1.4.0.css" %}" rel="stylesheet">
 
-    <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="{% url 'rss_articles' %}"/>
-
-
-    <meta name="og:type" content="website"/>
-    <meta name="og:site_name" content="open-neurosecurity.org"/>
-    <meta name="twitter:card" content="summary_large_image"/>
+    <link rel="alternate" type="application/rss+xml" title="RSS Feed" 
+    	href="{% url 'rss_articles' %}">
 
     {% block opengraph %}
     {% endblock opengraph %}
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.6.3/js/foundation.min.js"></script>
+    <script src="{% static 'material/material.js' %}"></script>
 
-</head>
+ </head>
 <body>
 
 {% block navbar %}
@@ -53,9 +51,14 @@
 {% endblock navbar %}
 
 <div class="container">
-    <div class="section">
-        {% block body %}{% endblock %}
-    </div>
+	{% block breadcrumbs %}
+	<ul class="breadcrumbs">
+	   {{ current_day }}
+	</ul>
+	{% endblock breadcrumbs %}
+      {% block body %}
+      {% endblock %}
+      <br class="clear"/>
 </div>
 <footer class="page-footer">
     <div class="footer-copyright">
@@ -70,22 +73,15 @@
 </footer>
 
 
-<!--  Scripts-->
-<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
-<script src="{% static 'material/material.js' %}"></script>
-<script src="{% static "admin/js/csrf.js" %}"></script>
-<script src="{% static "common/js/timezone-setter.js" %}"></script>
-{% if  not request.timezone %}<script>setTimezone();</script>{% endif %}
+{% if messages %}
 <script>
-    {% if messages %}
-        {% for message in messages %}
-            Materialize.toast('{{ message|linebreaksbr }}', 4000);
-        {% endfor %}
-    {% endif %}
+{% for message in messages %}
+ Materialize.toast('{{ message|linebreaksbr }}', 4000);
+{% endfor %}
 </script>
+{% endif %}
 
-{% block js %}{% endblock %}
-
+{% block js %}
+{% endblock js %}
 </body>
 </html>

@@ -1,10 +1,6 @@
-__copyright__ = "Copyright 2017 Birkbeck, University of London"
-__author__ = "Martin Paul Eve & Andy Byers"
-__license__ = "AGPL v3"
-__maintainer__ = "Birkbeck Centre for Technology and Publishing"
-
 import json
 import re
+import feedparser
 
 from django.conf import settings
 from django.contrib import messages
@@ -43,9 +39,13 @@ from submission import models as submission_models
 from utils import models as utils_models, shared
 from utils.logger import get_logger
 from events import logic as event_logic
+from preprint import models as preprints_models
+
+import tweepy
+twitter_auth = tweepy.OAuthHandler(settings.TWITTER_API_KEY, settings.TWITTER_API_SECRET_KEY)
+twitter_api = tweepy.API(twitter_auth)
 
 logger = get_logger(__name__)
-
 
 @has_journal
 @decorators.frontend_enabled
@@ -59,6 +59,16 @@ def home(request):
     sections = submission_models.Section.objects.filter(
         journal=request.journal,
     )
+    latest_preprints = submission_models.Article.preprints.filter(
+        date_published__lte=timezone.now()).latest()
+
+    
+    #Timeline (Twitter)
+    public_timeline = twitter_api.user_timeline('ahnjournal')[:10]
+
+    #RSS feeds (forum)
+    feed = feedparser.parse('https://open-neurosecurity.org/forum/index.php?action=.xml;type=rss')
+
 
     homepage_elements, homepage_element_names = core_logic.get_homepage_elements(
         request,
@@ -69,10 +79,12 @@ def home(request):
         'homepage_elements': homepage_elements,
         'issues': issues_objects,
         'sections': sections,
+        'latest_preprints': latest_preprints,
+        'public_timeline': public_timeline,
+        'feed': feed
     }
 
     # call all registered plugin block hooks to get relevant contexts
-
     for hook in settings.PLUGIN_HOOKS.get('yield_homepage_element_context', []):
         if hook.get('name') in homepage_element_names:
             try:
@@ -576,7 +588,7 @@ def view_galley(request, article_id, galley_id):
 
 
 @has_request
-@article_stage_accepted_or_later_or_staff_required
+#@article_stage_accepted_or_later_or_staff_required
 @file_user_required
 def serve_article_file(request, identifier_type, identifier, file_id):
     """ Serves an article file.
@@ -602,18 +614,11 @@ def serve_article_file(request, identifier_type, identifier, file_id):
         )
 
     try:
-        if file_id != "None":
-            file_object = get_object_or_404(core_models.File, pk=file_id)
-            return files.serve_file(request, file_object, article_object)
-        else:
-            raise Http404
+        file_object = get_object_or_404(core_models.File, pk=file_id)
+        return files.serve_file(request, file_object, article_object)
     except Http404:
-        if file_id != "None":
-            raise Http404
-
         # if we are here then the carousel is requesting an image for an article that doesn't exist
         # return a default image instead
-
         return redirect(static('common/img/default_carousel/carousel1.png'))
 
 
@@ -1729,8 +1734,12 @@ def contact(request):
             new_contact.object_ic = request.site_type.pk
             new_contact.save()
 
-            logic.send_contact_message(new_contact, request)
-            messages.add_message(request, messages.SUCCESS, 'Your message has been sent.')
+            try:
+                logic.send_contact_message(new_contact, request)
+            except:
+                messages.add_message(request, messages.ERROR, 'Error sending message.')
+            else:
+                messages.add_message(request, messages.SUCCESS, 'Your message has been sent.')
             return redirect(reverse('contact'))
 
     template = 'journal/contact.html'

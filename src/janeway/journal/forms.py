@@ -9,8 +9,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 
 from simplemathcaptcha.fields import MathCaptchaField
-from snowpenguin.django.recaptcha2.fields import ReCaptchaField
-from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
+#from snowpenguin.django.recaptcha2.fields import ReCaptchaField
+#from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
 from django_summernote.widgets import SummernoteWidget
 
 from core import models as core_models
@@ -52,8 +52,8 @@ class ContactForm(forms.ModelForm):
     if settings.CAPTCHA_TYPE == 'simple_math':
         question_template = _('What is %(num1)i %(operator)s %(num2)i? ')
         are_you_a_robot = MathCaptchaField(label=_('Answer this question: '))
-    elif settings.CAPTCHA_TYPE == 'recaptcha':
-        are_you_a_robot = ReCaptchaField(widget=ReCaptchaWidget())
+    #elif settings.CAPTCHA_TYPE == 'recaptcha':
+    #    are_you_a_robot = ReCaptchaField(widget=ReCaptchaWidget())
     else:
         are_you_a_robot = forms.CharField(widget=forms.HiddenInput(), required=False)
 

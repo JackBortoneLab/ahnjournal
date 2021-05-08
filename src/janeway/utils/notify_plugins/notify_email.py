@@ -58,8 +58,8 @@ def send_email(subject, to, html, journal, request, bcc=None, cc=None, attachmen
             file.open()
             msg.attach(file.name, file.read(), file.content_type)
             file.close()
-
-    return msg.send()
+    import pdb; pdb.set_trace()
+    return msg.send(fail_silently=False)
 
 
 def notify_hook(**kwargs):

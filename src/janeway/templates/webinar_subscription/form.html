@@ -1,0 +1,45 @@
+{% extends "core/base.html" %}
+{% load i18n towel_form_tags towel_batch_tags %}
+{% load static from staticfiles %}
+
+{% block breadcrumbs %}
+Webinar registration
+{% endblock %}
+
+
+{% block title %}{% trans "Webinar Registration" %} - {{ block.super }}{% endblock %}
+
+{% block opengraph %}
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="og:title" content="Conference signup" />
+<meta property="og:type" content="article" />
+<meta property="og:image" content="{% static  conference.image_url %}" />
+<meta property="og:url" content="{{ request.path }}" />
+<meta property="og:description" content="Conference date: {{ conference.conference_date }}" />
+<meta property="og:site_name" content="{{ request.journal.name }}" />
+{% endblock %}
+
+
+{% block body %}
+<div class="card">
+<div class="card-content">
+    <span class="card-title">{{ conference.title }}</span>
+    <p>Date: {{ conference.conference_date }}</p>
+    <p>Time: {{ conference.conference_time }}</p>
+    <p>To register to this webinar please fill-in the form below:</p>
+<form action="." method="post" class="form form-horizontal">
+
+  {{ form.as_p }}
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">
+      {% trans "Submit" %}</button>
+  </div>
+
+  <script>
+    document.getElementById("{{ form.email.auto_id }}").focus();
+  </script>
+</form>
+</div>
+</div>
+{% endblock %}

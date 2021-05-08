@@ -1,0 +1,23 @@
+{% load i18n %}
+{% load bootstrap4 %}
+
+<div class="card">
+
+  <div class="card-content">
+
+    {% if request.user.is_authenticated %}
+
+
+    <span class="card-title">{% trans 'Add a comment' %}</span>
+                            <div>
+                                <form method="POST">
+                                    {{ comment_form }}
+                                    <button type="submit" class="btn btn-success">Add Comment</button>
+                                </form>
+                            </div>
+ </div>
+{% else %}
+<p>You must <a href="{% url 'core_login' %}">login</a> to post a comment.</p>
+{% endif %}
+</div>
+</div>

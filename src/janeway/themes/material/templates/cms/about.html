@@ -1,0 +1,26 @@
+{% extends "core/base.html" %}
+{% load markdown_deux_tags %}
+{% load press_url from press_url %}
+
+{% block title %}{{ page.display_name }}{% endblock title %}
+
+{% block page_title %}{{ page.display_name }}{% endblock %}
+
+{% block body %}
+	<div id="row">
+		<div class="col s12">
+            <div class="card">
+                <div class="card-content">
+			<h2>About Applied Human Neurosecurity Journal</h2>
+			<p>AHNJournal is a novel science microjournal aiming to become a global community of citizens empowering change in mental health.</p>
+			<h3>Read more about AHNJournal</h3>
+			<ul>
+			{% for page in pages %}
+			<li><a href="{% journal_url 'cms_page' page.name %}">{{ page.display_name }}</a></li>
+			{% endfor %}
+			</ul>
+                </div>
+            </div>
+		</div>
+	</div>
+{% endblock body %}

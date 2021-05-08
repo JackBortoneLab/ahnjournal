@@ -1,4 +1,5 @@
 import urllib
+import markdown2
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
@@ -203,13 +204,41 @@ def news_item(request, news_pk):
     item = get_object_or_404(models.NewsItem.objects.prefetch_related('tags'),
                              pk=news_pk,
                              content_type=request.model_content_type)
+    
+    comments = models.Comment.objects.filter(
+            news_item=item
+            )
 
     if request.journal:
         template = 'core/news/item.html'
     else:
         template = 'press/core/news/item.html'
+    
+    # comments 
+    comment_form = forms.CommentForm(dict(news_item=item))
+
+    if (request.POST and request.user.is_authenticated()):
+        # save comment 
+        comment_form = forms.CommentForm(request.POST)
+        comment_form.news_item = item
+        #comment_form.author = request.user
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.author = request.user
+            comment.news_item = item
+            comment.body = markdown2.markdown(request.POST['body'])
+            comment.save()
+            messages.add_message(request, messages.SUCCESS, 'Comment saved.')
+
+        else:
+            messages.add_message(request, messages.ERROR, 'Invalid comment!')
+    
+        return redirect(reverse('core_news_item', args=(news_pk,)))
+
     context = {
         'news_item': item,
+        'comment_form': comment_form,
+        'comments': comments,
     }
 
     return render(request, template, context)

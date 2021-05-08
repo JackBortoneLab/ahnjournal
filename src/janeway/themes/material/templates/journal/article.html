@@ -102,31 +102,6 @@
                             {% endfor %}
                         </ul>
                     {% endif %}
-
-                    {% if article.funders.all %}
-                        <div class="callout primary">
-                            <h2>{% trans "Funding" %}</h2>
-                            <ul>
-                                {% for funder in article.funders.all %}
-                                    {% if funder.enable_sponsor %}
-				    	<li>
-					    <a href="{% url "funder_articles" funder.id %}">
-					{{ funder.full_name }}
-					{% comment %}
-					{% if funder.fundref_id %}
-					    </a>
-					 {% endif %}
-					 {% if funder.funding_id %} (grant {{ funder.funding_id }})
-					 {% endif %}
-					 {% endcomment %}
-					 </a>
-				    </li>
-				   {% endif %}
-                                {% endfor %}
-                            </ul>
-			    <p><a href="{% url "submit_funding" article.id %}">Add Fund to Article</a></p>
-                        </div>
-                    {% endif %}
                 </div>
             </div>
             <div class="row">

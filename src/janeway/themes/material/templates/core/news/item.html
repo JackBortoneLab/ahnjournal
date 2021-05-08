@@ -5,10 +5,12 @@
 {% block title %}{% trans "News" %} - {{ news_item.title }}{% endblock title %}
 
 {% block opengraph %}
+<meta name="twitter:card" content="summary_large_image" />
 <meta name="og:title" content="{{ news_item.title }}"/>
+<meta name="og:type" content="article"/>
 <meta name="og:description" content="{{ news_item.title }}"/>
 <meta name="og:url" content="{{ news_item.url }}" />
-<meta name="og:image" content="{% url 'news_file_download' 'id' news_item.id news_item.large_image_file.id %}" />
+<meta name="og:image" content="{{ news_item.get_meta_image_path }}" />
 {% endblock opengraph %}
 
 
@@ -44,4 +46,19 @@
             </div>
         </div>
     </div>
+    {% if comments %}
+    <h2>Comments</h2>
+    {% for comment in comments %}
+
+        <div class="card ui-generic">
+
+            <p>{{ comment.author }} <small>({{ comment.date_time }})</small></p>
+
+            <div class="card-content">{{ comment.body|safe }}</div>
+        </div>    
+    {% endfor %}
+    {% endif %}
+    
+
+    {% include "elements/news_comment.html" %}
 {% endblock body %}

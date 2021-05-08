@@ -1,0 +1,10 @@
+{% load i18n %}
+{% trans "Webinar subscription" %}
+
+{% trans "Visit the following link to confirm your subscription:" %}
+
+{{ subscribe_url }}
+
+{% trans "Warm regards" %}
+
+Applied Human Neurosecurity Journal Team

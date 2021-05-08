@@ -7,11 +7,23 @@ from django.http import Http404
 
 from core import files
 
-__copyright__ = "Copyright 2017 Birkbeck, University of London"
-__author__ = "Martin Paul Eve & Andy Byers"
-__license__ = "AGPL v3"
-__maintainer__ = "Birkbeck Centre for Technology and Publishing"
+class Comment(models.Model):
+    author = models.ForeignKey('core.Account', related_name="comment_author")
+    news_item = models.ForeignKey('comms.NewsItem', related_name="comment_news_item")
+    #reply_to = models.ForeignKey('self', blank=True, null=True)
+    date_time = models.DateTimeField(default=timezone.now)
+    body = models.TextField(verbose_name='Write your comment:')
 
+    #is_reviewed = models.BooleanField(default=False)
+    #is_public = models.BooleanField(default=False)
+
+    views = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ('-date_time', '-pk')
+
+    def __str__(self):
+        return 'Comment by {author} on {news_item}'.format(author=self.author.full_name(), news_item=self.news_item)
 
 class NewsItem(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name='news_content_type', null=True)
@@ -21,15 +33,17 @@ class NewsItem(models.Model):
     title = models.CharField(max_length=500)
     body = models.TextField()
     posted = models.DateTimeField(default=timezone.now)
-    posted_by = models.ForeignKey('core.Account', blank=True, null=True, on_delete=models.SET_NULL)
+    posted_by = models.ForeignKey('core.Account', blank=True, null=True)
 
     start_display = models.DateField(default=timezone.now)
     end_display = models.DateField(blank=True, null=True)
     sequence = models.PositiveIntegerField(default=0)
 
-    large_image_file = models.ForeignKey('core.File', null=True, blank=True, related_name='large_news_file',
-                                         on_delete=models.SET_NULL)
+    large_image_file = models.ForeignKey('core.File', blank=False, null=True, related_name='large_news_file')
     tags = models.ManyToManyField('Tag', related_name='tags')
+
+    # comments
+    comments = models.ManyToManyField('Comment', related_name='comments', null=True, blank=True)
 
     class Meta:
         ordering = ('-posted', 'title')
@@ -38,6 +52,10 @@ class NewsItem(models.Model):
     def url(self):
         path = reverse('core_news_item', kwargs={'news_pk': self.pk})
         return self.object.site_url(path)
+
+    @property
+    def thumbnail_image_file(self):
+        return self.large_image_file
 
     @property
     def carousel_subtitle(self):
@@ -80,6 +98,11 @@ class NewsItem(models.Model):
         else:
             return '{0} posted on {1}'.format(self.title, self.posted)
 
+    def get_meta_image_path(self):
+        return reverse('news_file_download', kwargs={'identifier_type': 'id',
+                                                     'identifier': self.pk,
+                                                     'file_id': self.large_image_file.pk})
+ 
 
 class Tag(models.Model):
     text = models.CharField(max_length=255)

@@ -58,13 +58,12 @@
 
                             {% buttons %}
                                 <button type="submit" class="button success" style="margin-right:5px">
-                                    {% bootstrap_icon "ok" %} {% if setting_value == None %} Create Override {% else %} Submit {% endif %}
+                                    {% if setting_value == None %} Create Override {% else %} Submit {% endif %}
                                 </button>
                                 {% if setting_value != setting.default_setting_value and setting_value != None%}
                                 <button type="submit" class="button alert float-right"
                                         onclick="return confirm_function()"
                                         name="delete" value="delete">
-                                    {% bootstrap_icon "remove" %}
                                     Remove setting override
                                 </button>
                                 {% endif %}

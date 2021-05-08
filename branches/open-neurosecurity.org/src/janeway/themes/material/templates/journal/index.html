@@ -1,0 +1,38 @@
+
+{% extends "core/base.html" %}
+{% load truncate %}
+
+{% block opengraph %}
+ <meta name="twitter:card" content="summary_large_image" />
+ <meta name="og:title" content="{{ request.journal.name }}"/>
+ <meta name="og:description" content="{{ request.journal.name }}"/>
+ <meta name="og:url" content="/ahnjournal{{ request.path_info }}"/>
+ <meta name="og:image" content="https://open-neurosecurity.org/media/img/cover2.jpg"/>
+{% endblock %}
+
+{% block breadcrumbs %}
+{% if latest_preprints %}
+Latest preprint: <a href="{% url 'preprints_article' latest_preprints.id %}">{{ latest_preprints.title }}</a>
+{% endif %}
+{% endblock %}
+
+{% block body %}
+{% for element in homepage_elements %}
+{% include element.template_path %}
+{% endfor %}
+
+{% endblock body %}
+
+{% comment %}
+{% block js %}
+    <script>
+        $(document).ready(function () {
+            $('.carousel.carousel-slider').carousel({fullWidth: true});
+        })
+        $('.carousel').carousel();
+        setInterval(function () {
+            $('.carousel').carousel('next');
+        }, 8000);
+    </script>
+{% endblock %}
+{% endcomment %}    
