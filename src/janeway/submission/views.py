@@ -18,8 +18,11 @@ from security.decorators import (
 from submission import forms, models, logic, decorators
 from events import logic as event_logic
 from utils import setting_handler
+from utils.notify_plugins import notify_email
 from utils import shared as utils_shared
 
+from utils.logger import get_logger
+logger = get_logger(__name__)
 
 @login_required
 @decorators.submission_is_enabled
@@ -30,6 +33,9 @@ def start(request, type='preprint', author_mode=True):
     :param type: string, None or 'preprint'
     :return: HttpRedirect or HttpResponse
     """
+
+    #)
+
     form = forms.ArticleStart(journal=request.journal)
 
     if not request.user.is_author(request):
@@ -44,8 +50,12 @@ def start(request, type='preprint', author_mode=True):
             new_article.journal = request.journal
             new_article.current_step = 1
             new_article.article_agreement = logic.get_agreement_text(request.journal)
+            
             new_article.save()
 
+            messages.add_message(
+                request, messages.SUCCESS, 'New submission started.'
+            )
             if type == 'preprint':
                 preprint_models.Preprint.objects.create(article=new_article)
 
@@ -464,8 +474,21 @@ def submit_review(request, article_id):
         article.stage = models.STAGE_UNASSIGNED
         article.current_step = 5
         article.snapshot_authors(article)
-        article.save()
-
+        try:
+            article.save()
+            logger.info("Saving real article in DB...")
+        except:
+            raise
+        # TODO send email here and add new LogEntry
+        message = "Your article has been successfully submitted!"
+        notify_email.send_email(
+            "New article submitted",
+            article.owner.email,
+            message,
+            request.journal,
+            request,
+            #replyto=[new_contact.sender],
+        )
         messages.add_message(
             request,
             messages.SUCCESS,
@@ -474,6 +497,7 @@ def submit_review(request, article_id):
 
         kwargs = {'article': article,
                   'request': request}
+        
         event_logic.Events.raise_event(
             event_logic.Events.ON_ARTICLE_SUBMITTED,
             task_object=article,

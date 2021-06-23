@@ -1,6 +1,15 @@
 {% extends "core/base.html" %}
 
-{% block title %}Issue {{ issue }}{% endblock %}
+{% block title %}{{ issue.issue_title }}{% endblock %}
+
+{% block opengraph %}
+ <meta name="twitter:card" content="summary_large_image" />
+ <meta name="og:title" content="{{ issue.issue_title }}"/>
+ <meta name="og:description" content="{{ issue.issue_description }}"/>
+ <meta name="og:url" content="/ahnjournal{{ request.path_info }}"/>
+ <meta name="og:image" content="https://open-neurosecurity.org/media/img/cover2.jpg"/>
+{% endblock %}
+
 
 {% block body %}
 {% include "journal/issue_display.html" %}

@@ -58,7 +58,6 @@ def send_email(subject, to, html, journal, request, bcc=None, cc=None, attachmen
             file.open()
             msg.attach(file.name, file.read(), file.content_type)
             file.close()
-    import pdb; pdb.set_trace()
     return msg.send(fail_silently=False)
 
 
@@ -68,7 +67,7 @@ def notify_hook(**kwargs):
     # action is a list of notification targets
     # if the "all" variable is passed, then some types of notification might act, like Slack.
     # Email, though, should only send if it's specifically an email in action, not on "all".
-    action = kwargs.pop('action', [])
+    action = kwargs.pop('action', ['email'])
 
     if 'email' not in action:
         # email is only sent if list of actions includes "email"
@@ -108,6 +107,3 @@ def notify_hook(**kwargs):
         }
         notify.notification(**notify_contents)
 
-
-def plugin_loaded():
-    pass

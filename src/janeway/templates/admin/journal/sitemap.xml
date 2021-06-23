@@ -10,9 +10,16 @@
     {% endfor%}
     {% for page in cms_pages %}
     <url>
-        <loc>{{ request.journal.site_url }}/site/{{ page.name }}</loc>
+        <loc>{{ request.journal.site_url }}/about/{{ page.name }}</loc>
         <lastmod>{{ page.edited }}</lastmod>
         <changefreq>monthly</changefreq>
     </url>
     {% endfor%}
+    {% for item in blog_items %}
+    <url>
+        <loc>{{ item.url }}</loc>
+        <lastmod>{{ item.posted }}</lastmod>
+        <changefreq>monthly</changefreq>
+    </url>    
+    {% endfor %}
 </urlset>

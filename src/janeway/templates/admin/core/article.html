@@ -5,7 +5,7 @@
 {% block breadcrumbs %}
     {{ block.super }}
     <li>Author</li>
-    <li>{{ article.title }}</li>
+    <li>{{ article.pk }}</li>
 {% endblock %}
 
 {% block body %}
@@ -17,6 +17,7 @@
         {% if article.stage == "Published" %}
             {% hook 'edit_article' %}
         {% endif %}
+
         <div class="content">
             {% include "elements/metadata.html" %}
         </div>

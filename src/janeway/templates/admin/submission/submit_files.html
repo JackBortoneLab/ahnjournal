@@ -4,19 +4,22 @@
 
 {% block title-section %}{% trans "Upload files" %}{% endblock %}
 {% block css %}
-    <link href="{% static 'admin/css/timeline.css' %}" rel="stylesheet">{% endblock %}
+<link href="{% static 'admin/css/timeline.css' %}" rel="stylesheet">
+{% endblock %}
+
+
 
 {% block body %}
 
-    <article class="box">
-        <div class="row expanded">
-            {% if error %}
-                <p>**{{ error }}**</p>
-            {% endif %}
-            {% include "submission/timeline.html" with data=article %}
-        </div>
+<div class="card">
+    <div class="card-content">
+        {% include "submission/timeline.html" with data=article %}
 
-        <div class="row expanded">
+        <div class="row expanded ">
+            {% if error %}
+        <p>Error: {{ error }}</p>
+        {% endif %}
+
             <div class="large-12 columns">
 
                 <p><strong>{% trans "Submission guidelines" %}</strong>: {% blocktrans %}To upload a file, select it
@@ -27,11 +30,9 @@
                 </div>
                 <div class="row expanded">
                     <div class="large-3 columns">
-                        <form method="POST" enctype="multipart/form-data">
-                            <a href="#" data-open="manuscript" class="button success" name="data"><i
+                         <button data-target="manuscript" class="btn modal-trigger"><i
                                     class="fa fa-upload">&nbsp;</i>{% trans "Upload" %}
-                            </a>
-                        </form>
+                         </button>
                     </div>
                     <div class="large-9 columns col-md-offset-1">
                         <table class="scroll small">
@@ -41,8 +42,6 @@
                                 <th></th>
                             </tr>
                             <form method="POST">
-                                {% csrf_token %}
-
                                 {% for file in article.manuscript_files.all %}
                                     <tr>
                                         <td>{{ file.label }}</td>
@@ -68,9 +67,9 @@
                     </div>
                     <div class="row expanded">
                         <div class="large-3 columns">
-                            <a href="#" data-open="data" class="button success" name="data"><i class="fa fa-upload">
+                            <button data-target="data" class="btn modal-trigger"><i class="fas fa-upload">
                                 &nbsp;</i>{% trans "Upload" %}
-                            </a>
+                            </button>
                         </div>
                         <div class="large-9 columns col-md-offset-1">
                             <table class="scroll small">
@@ -80,7 +79,7 @@
                                     <th></th>
                                 </tr>
                                 <form method="POST">
-                                    {% for file in article.data_figure_files.all %}
+                                {% for file in article.data_figure_files.all %}
                                         <tr>
                                             <td>{{ file.label }}</td>
                                             <td>{{ file }}</td>
@@ -91,7 +90,7 @@
                                         </tr>
                                         {% empty %}
                                         <tr>
-                                            <td colspan="3">{% trans "No files uploaded" %}</td>
+                                            <td colspan="3">{% trans "No files uploaded." %}</td>
                                         </tr>
                                     {% endfor %}
                                 </form>
@@ -106,19 +105,21 @@
                 <form method="POST">
                     {% csrf_token %}
                     <button class="button success pull-right" type="submit" name="next_step"><i class="fa fa-check">
-                        &nbsp;</i>{% trans "Save and Continue" %}
+                        &nbsp;</i>{% trans "Next" %}
                     </button>
                 </form>
             </div>
         </div>
-    </article>
+    </div>
+</div>
 
-    {% include "admin/elements/submit/file.html" with modaltype="manuscript" %}
-    {% include "admin/elements/submit/file.html" with modaltype="data" %}
+{% include "admin/elements/submit/file.html" with modaltype="manuscript" %}
+{% include "admin/elements/submit/file.html" with modaltype="data" %}
 
 {% endblock body %}
 
 {% block js %}
-{% include "admin/elements/open_modal.html" with target=modal %}
+{# {% include "admin/elements/open_modal.html" with target=modal %} #}
+<script>$('.modal').modal()</script>
 {% endblock %}
 

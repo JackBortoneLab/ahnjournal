@@ -460,6 +460,9 @@ class Issue(models.Model):
         through='IssueEditor',
     )
 
+    # Category of issue
+    subject = models.ForeignKey('preprint.Subject', blank=True, null=True)
+
     class Meta:
         ordering = ('order', 'year', 'volume', 'issue', 'title')
 
@@ -647,7 +650,7 @@ class Issue(models.Model):
 
         if published_only:
             issue_articles = issue_articles.filter(
-                Q(stage=submission_models.STAGE_PUBLISHED) |
+                Q(stage=submission_models.STAGE_PREPRINT_PUBLISHED) |
                 Q(stage=submission_models.STAGE_PLANNING),
                 date_published__lte=timezone.now(),
             )
@@ -852,7 +855,7 @@ def notification_type():
 
 class Notifications(models.Model):
     journal = models.ForeignKey(Journal)
-    user = models.ForeignKey('core.Account')
+    user = models.ForeignKey('core.Account', related_name="user_account")
     domain = models.CharField(max_length=100)
     type = models.CharField(max_length=10, choices=notification_type())
     active = models.BooleanField(default=False)

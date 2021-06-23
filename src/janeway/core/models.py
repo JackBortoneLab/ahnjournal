@@ -234,6 +234,7 @@ class Account(AbstractBaseUser, PermissionsMixin):
     class Meta:
         ordering = ('first_name', 'last_name', 'username')
         unique_together = ('email', 'username')
+        app_label = 'core'
 
     def clean(self, *args, **kwargs):
         """ Normalizes the email address
@@ -480,6 +481,10 @@ class Account(AbstractBaseUser, PermissionsMixin):
                                                         last_name=self.last_name)[:30]
         return username.lower()
 
+
+#class Author(Account):
+#    # this is required for django-notifications
+#    pass
 
 def generate_expiry_date():
     return timezone.now() + timedelta(days=1)
@@ -736,7 +741,11 @@ class File(models.Model):
     @property
     def article(self):
         if self.article_id:
-            return submission_models.Article.objects.get(pk=self.article_id)
+            try:
+                obj = submission_models.Article.objects.get(pk=self.article_id)
+            except:
+                obj = submission_models.Article.preprints.get(pk=self.article_id)
+        return obj
 
     def delete(self, *args, **kwargs):
         self.unlink_file()

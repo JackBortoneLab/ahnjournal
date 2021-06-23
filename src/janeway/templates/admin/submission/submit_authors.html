@@ -4,14 +4,13 @@
 
 {% block title-section %}{% trans "Author Information" %}{% endblock %}
 {% block css %}
-    <link href="{% static 'admin/css/timeline.css' %}" rel="stylesheet">{% endblock %}
+<link href="{% static 'admin/css/timeline.css' %}" rel="stylesheet">
+<link href="{% static "common/css/jq-ui.css" %}" rel="stylesheet">
+{% endblock %}
 
 {% block body %}
-    <article>
-
-    <form method="POST">
-    <div class="row box expanded">
-        {% csrf_token %}
+<div class="card">
+    <div class="row box expanded card-content">
         {% include "submission/timeline.html" with data=article %}
         <div class="large-7 columns">
             <div class="title-area">
@@ -19,7 +18,6 @@
             </div>
 
             <form method="POST">
-                {% csrf_token %}
                 <div class="row">
                     <div class="large-12 columns">
                         <p>{% trans "Search for a user using email address or ORCiD. If a user is matched, they will be automatically added as an author. This search only returns exact matches." %}</p>
@@ -36,6 +34,7 @@
                     </div>
                 </div>
             </form>
+            
             <div class="title-area">
                 <h2>{% trans 'Add Authors' %}</h2>
             </div>
@@ -46,11 +45,11 @@
                    href="{% url 'submit_authors' article.id %}?add_self=True">{% trans "Add Self as Author" %}</a>
             {% endif %}
             <p>{% trans "If you cannot find the author record by searching, and you are not the only author, you can add one by clicking the button below. This will open a popup modal for you to complete their details." %}</p>
-            <a href="#" data-open="author" class="small success button">{% trans "Add New Author" %}</a>
-            {% include "admin/elements/submit/author.html" %}
-        </div>
+            <button data-target="author" class="modal-trigger btn">{% trans "Add New Author" %}</button>
 
-        <div class="large-5 columns">
+   </div>
+
+   <div class="large-5 columns">
             <div class="title-area">
                 <h2>{% trans 'Current Authors' %}</h2>
             </div>
@@ -97,34 +96,41 @@
                         </select>
                         <br/>
                         <button class="success button pull-right" type="submit" name="start_submission"><i
-                                class="fa fa-check">&nbsp;</i>{% trans "Save and Continue" %}</button>
+                                class="fa fa-check">&nbsp;</i>{% trans "Next" %}</button>
                     </form>
                 </div>
             </div>
         </div>
-    </div>
+</div>
+
+
+{% include "admin/elements/submit/author.html" %}
+
 {% endblock body %}
+
+
 
 {% block js %}
     {% if modal %}
         {% include "admin/elements/open_modal.html" with target=modal %}
     {% endif %}
-    <script src="{% static "admin/js/csrf.js" %}"></script>
-    <link type='text/css' href="{% static "common/css/jq-ui.css" %}" rel="stylesheet">
+
     <script type="text/javascript" src="{% static "common/js/jq-ui.min.js" %}"></script>
     <script>
         $("#sortable").sortable({
             update: function (event, ui) {
                 var data = $(this).sortable('serialize');
-                console.log(data);
+                // console.log(data);
                 // POST to server using $.post or $.ajax
                 $.ajax({
                     data: data,
                     type: 'POST',
-                    url: '{% url 'submit_authors' article.pk %}'
-                });
-            }
-        });
-        $("#sortable").disableSelection();
+                    url: '{% url 'submit_authors' article.pk %}',
+                    success: function(){
+                                $("#sortable").disableSelection();
+                    }});
+            }});
+        $('.modal').modal();
+        $('.form-control').formSelect();
     </script>
 {% endblock %}

@@ -6,67 +6,93 @@
 {% block title-sub %}Account{% endblock %}
 
 {% block breadcrumbs %}
-{{ block.super }}
 <li><a href="{% url 'core_manager_index' %}">Manager</a></li>
 {% endblock %}
 
 
 {% block body %}
-<div class="box">
-    <div class="section">
-       <h2>Journal Settings</h2>
-                        <a class="button" href="{% url 'home_settings_index' %}">Journal Home Settings</a>
-                        <a class="button" href="{% url 'core_edit_settings_group' "journal" %}">Journal Settings</a>
-                        <a class="button" href="{% url 'core_settings_index' %}">All Settings</a>
-     </div>
-     <div class="section">
-        <h2>Review Settings</h2>
-                        <a class="button" href="{% url 'core_edit_settings_group' "review" %}">Review Settings</a>
-                        <a class="button" href="{% url 'review_review_forms' %}">Review Forms</a>
-     </div>
-     <div class="section">
-                    <h2>Submission Setup</h2>
-                        <a class="button" href="{% url 'core_edit_settings_group' "submission" %}">Submission Settings</a>
-                        <a class="button" href="{% url 'submission_configurator' %}">Submission Fields Configurator</a>
-                        <a class="button" href="{% url 'submission_fields' %}">Additional Submission Fields</a>
-     </div>
-     <div class="section">
-                    <h2>Workflow Setup</h2>
-                        <a class="button" href="{% url 'core_edit_settings_group' "proofing" %}">Proofing Settings</a>
- 	</div>
-	<div class="section">
-                    <h2>Content</h2>
-                        <a class="button" href="{% url 'cms_index' %}">Content Manager</a>
-                        <a class="button" href="{% url 'core_manager_news' %}">News Manager</a>
-                        <a class="button" href="{% url 'core_journal_contacts' %}">Journal Contacts</a>
-                        <a class="button" href="{% url 'core_editorial_team' %}">Editorial Team</a>
-                        <a class="button" href="{% url 'core_edit_settings_group' 'article' %}">Article Display Settings</a>
-	</div>
-	<div class="section">
-                    <h2>Articles & Issues</h2>
-                        <a class="button" href="{% url 'core_article_images' %}">Article Images Manager</a>
-                        <a class="button" href="{% url 'manage_issues' %}">Issue Manager</a>
-                        <a class="button" href="{% url 'core_manager_sections' %}">Article Sections</a>
-                        <a class="button" href="{% url 'submission_licenses' %}">Licence Manager</a>
-                    <h2>Crossref</h2>
-                        <a class="button" href="{% url 'core_edit_settings_group' "crossref" %}">Crossref Settings</a>
-                        <a class="button" href="{% url 'core_edit_settings_group' "crosscheck" %}">Crosscheck Settings</a>
-	</div>
-	<div class="section">
-                    <h2>Users</h2>
-                        <a class="button" href="{% url 'core_manager_users' %}">Users</a>
-                        {% if request.user.is_staff %}<a class="button" href="{% url 'core_manager_inactive_users' %}">Inactive Users</a>{% endif %}
-                        <a class="button" href="{% url 'core_manager_roles' %}">Roles</a>
-                        {% if request.user.is_staff %}<a class="button" href="{% url 'core_logged_in_users' %}">Authenticated Users</a>{% endif %}
-	</div>
-	<div class="section">
-                    <h2>Cache, Cron &amp; Emails</h2>
-                        <a class="button" href="{% url 'core_flush_cache' %}">Clear Cache</a>
-                        <a class="button" href="{% url 'cron_reminders' %}">Scheduled Reminders</a>
-                        <a class="button" href="{% url 'core_email_templates' %}">Email Templates</a>
-	</div><div class="section">
-                    <h2>Latest Publications</h2>
-		    <table>
+<div class="card">
+    <div class="card-content">    
+       <a class="dropdown-trigger button" href="#!" data-target="journalsettings">Journal Settings</a>
+       <ul id="journalsettings" class="dropdown-content">
+           <li>
+               <a href="{% url 'home_settings_index' %}">Journal Home Settings</a>
+           </li>
+           <li>   
+               <a href="{% url 'core_edit_settings_group' "journal" %}">Journal Settings</a>
+           </li>
+           <li>
+              <a href="{% url 'core_settings_index' %}">All Settings</a>
+            </li> 
+       </ul>    
+       <a class="dropdown-trigger button" href="#!" data-target="reviewsettings">Review Settings</a>
+       <ul id="reviewsettings" class="dropdown-content">
+           <li>
+                        <a href="{% url 'core_edit_settings_group' "review" %}">Review Settings</a>
+           </li>
+            <li>           
+                        <a href="{% url 'review_review_forms' %}">Review Forms</a>
+       </ul>
+        <a class="dropdown-trigger button" href="#!" data-target="submissionsetup">Submission Setup</a>
+        <ul id="submissionsetup" class="dropdown-content">
+            <li>
+                <a href="{% url 'core_edit_settings_group' "submission" %}">Submission Settings</a></li><li>
+                <a href="{% url 'submission_configurator' %}">Submission Fields Configurator</a></li>
+            <li>
+                        <a href="{% url 'submission_fields' %}">Additional Submission Fields</a>
+            </li>
+        </ul>
+        <a class="dropdown-trigger button" href="#!" data-target="workflowsetup">Workflow Setup</a>
+        <ul id="workflowsetup" class="dropdown-content">
+            <li>
+                <a href="{% url 'core_edit_settings_group' "proofing" %}">Proofing Settings</a></li>
+        </ul>
+
+         <a class="dropdown-trigger button" href="#!" data-target="contentbox">Content</a>
+
+        <ul id="contentbox" class="dropdown-content">
+            <li><a href="{% url 'cms_index' %}">Content Manager</a></li>
+            <li><a href="{% url 'core_manager_news' %}">News Manager</a></li>
+            <li><a href="{% url 'core_journal_contacts' %}">Journal Contacts</a></li>
+            <li><a href="{% url 'core_editorial_team' %}">Editorial Team</a></li>
+            <li><a href="{% url 'core_edit_settings_group' 'article' %}">Article Display Settings</a></li></ul>
+        <a class="dropdown-trigger button" href="#!" data-target="articles">Articles & Issues</a>
+        <ul id="articles" class="dropdown-content">
+            <li>
+                <a href="{% url 'core_article_images' %}">Article Images Manager</a></li>
+            <li>
+                <a href="{% url 'manage_issues' %}">Issue Manager</a></li>
+            <li>
+                <a href="{% url 'core_manager_sections' %}">Article Sections</a></li>
+            <li>
+                <a href="{% url 'submission_licenses' %}">Licence Manager</a></li>
+            <li>
+               <a href="{% url 'core_edit_settings_group' "crossref" %}">Crossref Settings</a>
+            </li>
+            <li>
+               <a href="{% url 'core_edit_settings_group' "crosscheck" %}">Crosscheck Settings</a>
+            </li>
+        </ul> 
+        <a class="dropdown-trigger button" href="#!" data-target="users">Users and Cache Management</a>
+        <ul id="users" class="dropdown-content">
+            <li>
+                <a href="{% url 'core_manager_users' %}">Users</a></li>
+
+            {% if request.user.is_staff %}<li><a href="{% url 'core_manager_inactive_users' %}">Inactive Users</a></li>{% endif %}
+            <li>
+                <a href="{% url 'core_manager_roles' %}">Roles</a><li>
+                    {% if request.user.is_staff %}<li><a href="{% url 'core_logged_in_users' %}">Authenticated Users</a></li>{% endif %}
+                    <li>
+                        <a href="{% url 'core_flush_cache' %}">Clear Cache</a>
+                    </li>
+                    <li>    
+                        <a href="{% url 'cron_reminders' %}">Scheduled Reminders</a>
+                    </li>
+                    <li><a href="{% url 'core_email_templates' %}">Email Templates</a></li>
+        </ul>
+<div class="card-content">
+                    <h2>Latest Preprints</h2>
+		    <table id="latest-pubs">
 			    <thead>
                             <tr>
                                 <th width="50%">Title</th>
@@ -84,23 +110,25 @@
                                     <td>{{ article.metrics.downloads }}</td>
                                     <td>{{ article.date_published }}</td>
                                     <td><h5><a href="https://www.facebook.com/share.php?p[url]={{ article.url }}"
-                                               target="_blank"><i class="fa fa-facebook"></i></a>
+                                               target="_blank"><i class="fab fa-facebook"></i></a>
                                         <a href="https://twitter.com/intent/tweet?text={{ article.title }} {{ article.url }}"
-                                           target="_blank"><i class="fa fa-twitter"></i></a>
+                                           target="_blank"><i class="fab fa-twitter"></i></a>
                                         <a href="https://plus.google.com/share?url={{ article.url }}"><i
-                                                class="fa fa-google-plus"></i></a>
+                                                class="fab fa-google-plus"></i></a>
                                         <a href="https://www.linkedin.com/sharing/share-offsite?url={{ article.url }}"><i
-                                                class="fa fa-linkedin"></i></a></h5>
+                                                class="fab fa-linkedin"></i></a></h5>
                                     </td>
                                 </tr>
                             {% endfor %}
                             </tbody>
                         </table>
-	</div>
-     </div>
-</div> 
+</div>
+</div>
 {% endblock body %}
 
 {% block js %}
-    {% include "elements/datatables.html" with target="#latest-pubs" sort=2 %}
+{% include "elements/datatables.html" with target="#latest-pubs" sort=2 %} 
+<script>
+$('.dropdown-trigger').dropdown();
+</script>    
 {% endblock %}

@@ -96,6 +96,8 @@ def user_login(request):
 
                 if request.GET.get('next'):
                     return redirect(request.GET.get('next'))
+                elif request.journal:
+                    return redirect(reverse('core_dashboard'))
                 else:
                     return redirect(reverse('website_index'))
             else:
@@ -616,8 +618,9 @@ def manager_index(request):
 
     template = 'core/manager/index.html'
     context = {
-        'published_articles': submission_models.Article.objects.filter(
-            stage=submission_models.STAGE_PUBLISHED, journal=request.journal).select_related('section')[:25]
+        'published_articles': submission_models.Article.preprints.filter(
+            stage=submission_models.STAGE_PREPRINT_PUBLISHED, 
+            journal=request.journal) #.select_related('section')[:25]
     }
 
     return render(request, template, context)
@@ -1622,7 +1625,20 @@ def delete_note(request, article_id, note_id):
     return redirect("{0}?article_id={1}".format(url, article_id))
 
 
-@staff_member_required
+@editor_user_required
+def delete_article(request, article_id):
+    """Delete article view then add notification if successful."""
+    obj = get_object_or_404(submission_models.Article, pk=article_id)
+    obj.delete()
+    
+    # Display a UI notification 
+    messages.add_message(request, messages.INFO, 'Article deleted.')
+
+    url = reverse('core_dashboard')
+    return redirect(url)
+
+
+@editor_user_required
 def manage_notifications(request, notification_id=None):
     notifications = journal_models.Notifications.objects.filter(journal=request.journal)
     notification = None

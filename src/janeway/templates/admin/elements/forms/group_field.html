@@ -3,11 +3,18 @@
 </div>
 <div class="content">
     {% if field.field.is_checkbox %}
+    <p>
+    <label>
+
     {{ field }}
-    {{ field.help_text|safe }}
+
+    <span>{{ field.help_text|safe }}</span>
+    
+    </label>
+    </p>
     {% else %}
-    {{ field.help_text|safe }}
-    {{ field }}
+    <p>{{ field.help_text|safe }}
+    {{ field }}</p>
     {% endif %}
     {% for error in field.errors %}
         <small{% if field.errors %} class="error"{% endif %}>{{ error|escape }}</small>

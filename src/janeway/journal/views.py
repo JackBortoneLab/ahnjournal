@@ -19,7 +19,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.core.management import call_command
-
+from django.views.decorators.cache import cache_page
 from cms import models as cms_models
 from core import (
     files,
@@ -40,13 +40,15 @@ from utils import models as utils_models, shared
 from utils.logger import get_logger
 from events import logic as event_logic
 from preprint import models as preprints_models
+from comms import models as comms_models
 
-import tweepy
-twitter_auth = tweepy.OAuthHandler(settings.TWITTER_API_KEY, settings.TWITTER_API_SECRET_KEY)
-twitter_api = tweepy.API(twitter_auth)
+#import tweepy
+#twitter_auth = tweepy.OAuthHandler(settings.TWITTER_API_KEY, settings.TWITTER_API_SECRET_KEY)
+#twitter_api = tweepy.API(twitter_auth)
 
 logger = get_logger(__name__)
 
+#@cache_page(60 * 30)
 @has_journal
 @decorators.frontend_enabled
 def home(request):
@@ -64,10 +66,10 @@ def home(request):
 
     
     #Timeline (Twitter)
-    public_timeline = twitter_api.user_timeline('ahnjournal')[:10]
+    #public_timeline = twitter_api.user_timeline('ahnjournal')[:10]
 
     #RSS feeds (forum)
-    feed = feedparser.parse('https://open-neurosecurity.org/forum/index.php?action=.xml;type=rss')
+    #feed = feedparser.parse('https://open-neurosecurity.org/forum/index.php?action=.xml;type=rss')
 
 
     homepage_elements, homepage_element_names = core_logic.get_homepage_elements(
@@ -80,8 +82,8 @@ def home(request):
         'issues': issues_objects,
         'sections': sections,
         'latest_preprints': latest_preprints,
-        'public_timeline': public_timeline,
-        'feed': feed
+        #'public_timeline': public_timeline,
+        #'feed': feed
     }
 
     # call all registered plugin block hooks to get relevant contexts
@@ -193,7 +195,8 @@ def articles(request):
         return logic.unset_article_session_variables(request)
 
     sections = submission_models.Section.objects.language().fallbacks('en').filter(journal=request.journal,
-                                                                                   is_filterable=True)
+                                                                                   is_filterable=True,
+                                                                                   )
     page, show, filters, sort, redirect, active_filters = logic.handle_article_controls(request, sections)
 
     if redirect:
@@ -207,7 +210,7 @@ def articles(request):
         journal=request.journal,
         stage=submission_models.STAGE_PLANNING,
         date_published__lte=timezone.now(),
-        section__pk__in=filters,
+        #section__pk__in=filters,
     ).prefetch_related(
         'frozenauthor_set',
     ).order_by(sort).exclude(
@@ -287,6 +290,7 @@ def issue(request, issue_id, show_sidebar=True):
     """
     issue_object = get_object_or_404(
         models.Issue.objects.prefetch_related('editors'),
+        #submission_models.Article.preprints.prefetch_related('editors'),
         pk=issue_id,
         journal=request.journal,
         date__lte=timezone.now(),
@@ -1796,14 +1800,18 @@ def sitemap(request):
     :param request: HttpRequest object
     :return: HttpResponse object
     """
-    articles = submission_models.Article.objects.filter(date_published__lte=timezone.now(), journal=request.journal)
+    articles = submission_models.Article.preprints.filter(date_published__lte=timezone.now(), journal=request.journal)
+    
     cms_pages = cms_models.Page.objects.filter(object_id=request.site_type.id, content_type=request.model_content_type)
-
+    
+    blog_items = comms_models.NewsItem.objects.filter(content_type=request.model_content_type,
+                                               object_id=request.site_type.pk)
     template = 'journal/sitemap.xml'
 
     context = {
         'articles': articles,
         'cms_pages': cms_pages,
+        'blog_items': blog_items
     }
     return render(request, template, context, content_type="application/xml")
 
@@ -1888,6 +1896,7 @@ def submissions(request):
     :return: HttpResponse object
     """
     template = 'journal/submissions.html'
+    public_submissions = False
 
     if request.journal.disable_front_end:
         template = 'admin/journal/submissions.html'
@@ -1897,7 +1906,7 @@ def submissions(request):
             'en'
         ).filter(
             journal=request.journal,
-            public_submissions=True,
+            public_submissions=public_submissions,
         ),
         'licenses': submission_models.Licence.objects.filter(
             journal=request.journal,

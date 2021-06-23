@@ -1,3 +1,8 @@
 - News: Comments 
 - Recent changes (forum) rss
 
+Submissions:
+- new submission -> event::LogEntry -> send_mail (LogEntry.save) 
+                                    -> info@open-neurosecurity.org
+- submission complete -> LogEntry   -> send_mail 
+

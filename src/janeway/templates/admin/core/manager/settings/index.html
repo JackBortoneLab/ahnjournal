@@ -6,9 +6,11 @@
 {% block title-sub %}General{% endblock %}
 
 {% block breadcrumbs %}
+</ul class="breadcrumbs">
     {{ block.super }}
     <li><a href="{% url 'core_manager_index' %}">Manager</a></li>
     <li><a href="{% url 'core_settings_index' %}">Settings</a></li>
+</ul>
 {% endblock %}
 
 {% block body %}

@@ -12,10 +12,11 @@ from press import views as press_views
 from cms import views as cms_views
 from submission import views as submission_views
 from journal import views as journal_views
-
+#import notifications.urls as notification_urls
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^submit/', include('submission.urls')),
+    #url(r'^demo/', include('demo.urls')),
     url(r'', include(journal_urls)),
     url(r'^review/', include('review.urls')),
     url(r'^metrics/', include('metrics.urls')),
@@ -76,6 +77,7 @@ urlpatterns = [
     # Notes
     url(r'^article/(?P<article_id>\d+)/note/(?P<note_id>\d+)/delete/$', core_views.delete_note,
         name='kanban_delete_note'),
+
 
     # Manager URLS
     url(r'^manager/$', core_views.manager_index, name='core_manager_index'),
@@ -139,10 +141,11 @@ urlpatterns = [
         name='core_editorial_ordering_group'),
 
     # Notifications
-    url(r'^manager/notifications/$',
-        core_views.manage_notifications, name='core_manager_notifications'),
-    url(r'^manager/notifications/(?P<notification_id>\d+)/$',
-        core_views.manage_notifications, name='core_manager_edit_notifications'),
+    #url(r'^inbox/notifications/$',
+        #core_views.manage_notifications, name='core_manager_notifications'),
+        #include(notification_urls, namespace='notifications')),
+    #url(r'^manager/notifications/(?P<notification_id>\d+)/$',
+        #core_views.manage_notifications, name='core_manager_edit_notifications')
 
     # Plugin home
     url(r'^manager/plugins/$',
@@ -181,8 +184,11 @@ urlpatterns = [
     # Cache
     url(r'^manager/cache/flush/$', core_views.flush_cache, name='core_flush_cache'),
 
+
+    # Articles (Editor views)
     url(r'^edit/article/(?P<article_id>\d+)/metadata/$', submission_views.edit_metadata, name='edit_metadata'),
     url(r'^edit/article/(?P<article_id>\d+)/authors/order/$', submission_views.order_authors, name='order_authors'),
+    url(r'^edit/article/(?P<article_id>\d+)/delete/$', core_views.delete_article, name="delete_article"),
 
     # Public Profiles
     url(r'profile/(?P<uuid>[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})/$', core_views.public_profile, name='core_public_profile'),
@@ -228,14 +234,17 @@ if blocks:
 #            print("Error loading a plugin: {0}, {1}".format(plugin.name, e))
 #            pass
 
-# load the notification plugins
-#if len(settings.NOTIFY_FUNCS) == 0:
-#    plugins = notify.load_modules()
-#    frameworks = []
-#
-#    for key, val in plugins.items():
-#        if hasattr(val, 'notify_hook'):
-#            settings.NOTIFY_FUNCS.append(val.notify_hook)
+###
+# Load the notification plugins
+# TODO: move this somewhere else (JB)
+if len(settings.NOTIFY_FUNCS) == 0:
+    plugins = notify.load_modules()
+    frameworks = []
+
+    for key, val in plugins.items():
+        if hasattr(val, 'notify_hook'):
+            #print("Loading plugin: %s" % val)
+            settings.NOTIFY_FUNCS.append(val.notify_hook)
 
 urlpatterns += [
     url(r'^about/$', cms_views.view_index, name='cms_site_index'),

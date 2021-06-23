@@ -1,6 +1,5 @@
 {% load foundation %}
-<div class="reveal small" id="author" data-reveal data-animation-in="slide-in-up"
-     data-animation-out="slide-out-down">
+<div class="modal" id="author">
     <div class="card">
         <div class="card-divider">
             <h4><i class="fa fa-user">&nbsp;</i>Edit {{ frozen_author.full_name }}</h4>
@@ -18,6 +17,6 @@
         </div>
     </div>
     <button class="close-button" data-close aria-label="Close reveal" type="button">
-        <span aria-hidden="true">&times;</span>
+        <span aria-hidden="true">Okay.</span>
     </button>
 </div>

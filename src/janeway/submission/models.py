@@ -498,6 +498,9 @@ class Article(models.Model):
     #Amount needed for publishing
     funding_target = models.PositiveIntegerField(default=300)
 
+    #Subject area
+    #subject_area = models
+
     class Meta:
         ordering = ('-date_published', 'title')
         get_latest_by = 'date_updated'
@@ -822,8 +825,14 @@ class Article(models.Model):
         if self.pk is not None:
             current_object = Article.allarticles.get(pk=self.pk)
             if current_object.stage != self.stage:
+                logger.debug("Creating new ArticleStageLog instance")
                 ArticleStageLog.objects.create(article=self, stage_from=current_object.stage,
                                                stage_to=self.stage)
+            # create a new LogEntry
+            #logentry = LogEntry.objects.create(subject="New submission")
+            #logentry.save()
+
+
         super(Article, self).save(*args, **kwargs)
 
     def folder_path(self):

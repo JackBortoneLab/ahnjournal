@@ -11,6 +11,11 @@ from cms import models as cms_models
 from core import logic
 
 from datetime import datetime
+from utils.logic import get_janeway_version
+
+def version(request):
+    v = get_janeway_version()
+    return {"janeway_version" : v}
 
 def date(request):
     current_day = datetime.now()

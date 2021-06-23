@@ -44,7 +44,7 @@ def send_reset_token(request, reset_token):
                                                   log_dict=log_dict)
 
 
-def send_confirmation_link(request, new_user):
+def send_confirmation_link(request, new_user, slack=False, email=True):
     context = {'user': new_user}
     if not request.journal:
         message = render_template.get_message_content(request, context, request.press.registration_text,
@@ -54,9 +54,12 @@ def send_confirmation_link(request, new_user):
         message = render_template.get_message_content(request, context, 'new_user_registration')
         subject = 'subject_new_user_registration'
 
-    notify_helpers.send_slack(request, 'New registration: {0}'.format(new_user.full_name()), ['slack_admins'])
-    log_dict = {'level': 'Info', 'types': 'Account Confirmation', 'target': None}
-    notify_helpers.send_email_with_body_from_user(request, subject, new_user.email, message, log_dict=log_dict)
+    if slack:
+        notify_helpers.send_slack(request, 'New registration: {0}'.format(new_user.full_name()), ['slack_admins'])
+    
+    if email:
+        log_dict = {'level': 'Info', 'types': 'Account Confirmation', 'target': None}
+        notify_helpers.send_email_with_body_from_user(request, subject, new_user.email, message, log_dict=log_dict)
 
 
 def resize_and_crop(img_path, size, crop_type='middle'):

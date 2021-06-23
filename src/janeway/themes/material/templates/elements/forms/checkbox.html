@@ -1,9 +1,10 @@
 <div clas="input-field">
-   {{ field }}
-    <label for="{{ field.auto_id }}">{{ field.label }}</label>
+
+    <label for="{{ field.auto_id }}">
+    {{ field }}
+        <span>{{ field.label }}</span>    
     {% if field.field.help_text %}
-        <small class="text-muted">
-            <div class="help-block">{{ field.field.help_text }}</div>
-        </small>
+        <div class="help-block">{{ field.field.help_text }}</div>
     {% endif %}
+    </label>
 </div>

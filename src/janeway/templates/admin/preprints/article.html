@@ -6,10 +6,12 @@
 {% load files %}
 
 {% block breadcrumbs %}
+<ul class="breadcrumbs">
     {{ block.super }}
     <li><a href="{% url 'core_manager_index' %}">Press Manager</a></li>
     <li><a href="{% url 'preprints_manager' %}">Preprint Manager</a></li>
     <li>{{ preprint.title|safe }}</li>
+</ul>    
 {% endblock %}
 
 {% block body %}
@@ -38,7 +40,7 @@
                     <tr>
                         <td>{{ preprint.date_started }}</td>
                         <td>{{ preprint.date_submitted }}</td>
-                        <td>{% for subject in preprint.subject_set.all %}{{ subject.name }}{% if not forloop.last %}, {% endif %}{% endfor %} <a href="#" data-open="subjectmodal"><i class="fa fa-pencil-square"</a></td>
+                        <td>{% for subject in preprint.subject_set.all %}{{ subject.name }}{% if not forloop.last %}, {% endif %}{% endfor %} <a href="#subjectmodal" class="modal-trigger"><i class="fa fa-pencil-square"/></a></td>
                     </tr>
                     <tr>
                         <th colspan="4">Abstract</th>
@@ -90,8 +92,11 @@
                             <td><a href="#" data-open="author-{{ order.author.pk }}">{{ order.author.full_name }}</a></td>
                             <td>{{ order.author.email }}</td>
                             <td>{% if order.author == preprint.correspondence_author %}
-                                <i class="fa fa-check-circle" style="color: green;"></i>{% else %}
-                                <i class="fa fa-times-circle" style="color: red;"></i>{% endif %}</td>
+                                <i class="fas fa-check-circle" style="color: green;"></i>
+                                {% else %}
+                                <i class="fas fa-times-circle" style="color: red;"></i>
+                                {% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
                 </table>
@@ -303,4 +308,8 @@
 {% block js %}
     {% include "elements/datepicker.html" with target="#date" %}
     {% include "elements/timepicker.html" with target="#time" %}
+<script>
+$('.modal').modal();
+</script>
+
 {% endblock %}

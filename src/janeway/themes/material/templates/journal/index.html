@@ -6,22 +6,16 @@
  <meta name="twitter:card" content="summary_large_image" />
  <meta name="og:title" content="{{ request.journal.name }}"/>
  <meta name="og:description" content="{{ request.journal.name }}"/>
- <meta name="og:url" content="/ahnjournal{{ request.path_info }}"/>
+ <meta name="og:url" content="{{ request.path_info }}"/>
  <meta name="og:image" content="https://open-neurosecurity.org/media/img/cover2.jpg"/>
 {% endblock %}
 
 {% block breadcrumbs %}
-
-<ul class="breadcrumbs">
-
-{% if not request.user.is_authenticated %}
-<a href="{% url 'core_login' %}">Please sign in.</a>
-{% else %}
+{% comment %}
 {% if latest_preprints %}
 Latest preprint: <a href="{% url 'preprints_article' latest_preprints.id %}">{{ latest_preprints.title }}</a>
 {% endif %}
-{% endif %}
-</ul>
+{% endcomment %}
 {% endblock %}
 
 {% block body %}

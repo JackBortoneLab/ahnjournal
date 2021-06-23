@@ -45,7 +45,7 @@ def get_site_resources(request):
                     "" % settings.URL_CONFIG
             )
     except (journal_models.Journal.DoesNotExist, IndexError) as exc:
-        logger.warning("Caught exception: %s" % exc)
+        #logger.warning("Caught exception: %s" % exc)
         try: # try press site
             press = press_models.Press.get_by_request(request)
         except press_models.Press.DoesNotExist:
@@ -85,13 +85,18 @@ class SiteSettingsMiddleware(object):
         :return: None or an http 404 error in the event of catastrophic failure
         """
 
-        journal, press, redirect_obj = get_site_resources(request)
-        if redirect_obj is not None:
-            return redirect_obj
+        #journal, press, redirect_obj = get_site_resources(request)
+        code = settings.JOURNAL_CODE
+        journal = journal_models.Journal.objects.get(code__exact=code)
+        press = journal.press
+
+        #if redirect_obj is not None:
+        #    return redirect_obj
 
         request.port = request.META['SERVER_PORT']
-        request.press = press
-        request.press_cover = press.press_cover(request)
+        if press is not None:
+            request.press = press
+            request.press_cover = press.press_cover(request)
 
         if journal is not None:
             logger.set_prefix(journal.code)
@@ -102,20 +107,21 @@ class SiteSettingsMiddleware(object):
             request.model_content_type = ContentType.objects.get_for_model(
                     journal)
 
-            if settings.URL_CONFIG == 'path':
-                prefix = "/" + journal.code
-                logger.debug("Setting script prefix to %s" % prefix)
-                set_script_prefix(prefix)
-                request.path_info = request.path_info[len(prefix):]
+            # We use nginx for this.
+            #if settings.URL_CONFIG == 'path':
+            #    prefix = "/" + journal.code
+            #    logger.debug("Setting script prefix to %s" % prefix)
+            #    set_script_prefix(prefix)
+            #    request.path_info = request.path_info[len(prefix):]
 
-        elif press is not None:
-            logger.set_prefix("press")
-            request.journal = None
-            request.site_type = press
-            request.model_content_type = ContentType.objects.get_for_model(press)
-            request.press_base_url = press.site_url()
-        else:
-            raise Http404()
+        #elif press is not None:
+        #    logger.set_prefix("press")
+        #    request.journal = None
+        #    request.site_type = press
+        #    request.model_content_type = ContentType.objects.get_for_model(press)
+        #    request.press_base_url = press.site_url()
+        #else:
+        #    raise Http404()
 
         # We check if the journal and press are set to be secure and redirect if the current request is not secure.
         #if not request.is_secure():

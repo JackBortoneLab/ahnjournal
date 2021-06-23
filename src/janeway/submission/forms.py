@@ -64,7 +64,7 @@ class ArticleStart(forms.ModelForm):
             self.fields.pop('comments_editor')
 
 
-class ArticleInfo(KeywordModelForm):
+class ArticleInfo(forms.ModelForm):
 
     class Meta:
         model = models.Article

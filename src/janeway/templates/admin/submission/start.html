@@ -13,9 +13,9 @@
     <link href="{% static 'admin/css/timeline.css' %}" rel="stylesheet">{% endblock %}
 
 {% block body %}
-    <article>
+<div class="card">
         <form method="POST">
-            <div id="content submission-content" class="box">
+            <div id="content" class="card-content">
                 {% csrf_token %}
 
                 {% include "admin/submission/timeline.html" with data=article %}
@@ -33,8 +33,11 @@
                         {{ journal_settings.general.publication_fees|safe }}
                         {% hook 'publication_fees' %}
                         <br />
-                        {{ form.publication_fees }}&nbsp;&nbsp;<label
-                            for="id_publication_fees">{% trans "Author(s) agrees to the above statement" %}</label>
+                        <p><label for="id_publication_fees">
+                            {{ form.publication_fees }}
+                            <span>{% trans "Author(s) agrees to the above statement" %}</span>
+
+                        </label></p>
                     </div>
                 {% endif %}
 
@@ -45,8 +48,10 @@
                     <div class="content submission-content">
                         {{ journal_settings.general.submission_checklist|safe }}
                         <br />
-                        {{ form.submission_requirements }}&nbsp;&nbsp;<label
-                            for="id_submission_requirements">{% trans "Author(s) confirms that this article adheres to the above requirements" %}</label>
+                        <label for="id_submission_requirements">
+                        {{ form.submission_requirements }}
+                        <span>{% trans "Author(s) confirms that this article adheres to the above requirements" %}
+                        </span></label>
                     </div>
                 {% endif %}
 
@@ -57,8 +62,10 @@
                     <div class="content submission-content">
                         {{ journal_settings.general.copyright_notice|safe }}
                         <br />
-                        {{ form.copyright_notice }}&nbsp;&nbsp;<label
-                            for="id_copyright_notice">{{ form.copyright_notice.label }}</label>
+                        <label for="id_copyright_notice">
+                            {{ form.copyright_notice }}
+                            <span>{{ form.copyright_notice.label }}</span>
+                        </label>
                     </div>
                 {% endif %}
 
@@ -86,6 +93,6 @@
                 <br/>
             </div>
         </form>
-    </article>
+</div>
 
 {% endblock body %}

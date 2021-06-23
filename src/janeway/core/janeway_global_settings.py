@@ -69,7 +69,8 @@ INSTALLED_APPS = [
     'utils',
     #'install',
     'workflow',
-    'webinar',
+    #'webinar',
+    #'demo',
 
     # 3rd Party
     'django_summernote',
@@ -83,6 +84,7 @@ INSTALLED_APPS = [
     #'snowpenguin.django.recaptcha2',
     'simplemathcaptcha',
     'towel',
+    #'notifications',
 
     # Forms
     'django.forms',
@@ -106,8 +108,8 @@ MIDDLEWARE_CLASSES = (
     'janeway.core.middleware.TimezoneMiddleware',
     'janeway.core.middleware.SiteSettingsMiddleware',
     'janeway.utils.template_override_middleware.ThemeEngineMiddleware',
-    'janeway.core.middleware.MaintenanceModeMiddleware',
-    #'janeway.cron.middleware.CronMiddleware',
+    #'janeway.core.middleware.MaintenanceModeMiddleware',
+    'janeway.cron.middleware.CronMiddleware',
     'janeway.core.middleware.CounterCookieMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'janeway.core.middleware.PressMiddleware',
@@ -140,6 +142,7 @@ TEMPLATES = [
                 'janeway.core.context_processors.active',
                 'janeway.core.context_processors.navigation',
                 'janeway.core.context_processors.date',
+                'janeway.core.context_processors.version',
                 'django_settings_export.settings_export',
                 'django.template.context_processors.i18n'
             ],
@@ -155,6 +158,7 @@ TEMPLATES = [
     },
 ]
 
+#TEMPLATE_CONTEXT_PROCESSORS = TEMPLATES[0]['OPTIONS']['context_processors']
 #FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
 
 SETTINGS_EXPORT = [
@@ -170,7 +174,7 @@ SETTINGS_EXPORT = [
 ]
 
 WSGI_APPLICATION = 'janeway.core.wsgi.application'
-DEFAULT_HOST = 'https://open-neurosecurity.org/ahnjournal'  # This is the default redirect if no other sites are found.
+DEFAULT_HOST = 'https://open-neurosecurity.org/'  # This is the default redirect if no other sites are found.
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
@@ -249,7 +253,7 @@ if ENABLE_TEXTURE:
 
 SUMMERNOTE_CONFIG = {
     # Using SummernoteWidget - iframe mode
-    'iframe': True,  # or set False to use SummernoteInplaceWidget - no iframe mode
+    'iframe': False,  # or set False to use SummernoteInplaceWidget - no iframe mode
 
     # Using Summernote Air-mode
     'airMode': False, 
@@ -361,7 +365,7 @@ DATE_FORMT = "Y-m-d"
 DATETIME_FORMAT = "Y-m-d H:i"
 AUTH_USER_MODEL = 'core.Account'
 
-#PLUGIN_HOOKS = {}
+PLUGIN_HOOKS = {}
 NOTIFY_FUNCS = []
 #JANEWAY_CRONJOBS = []
 
@@ -373,7 +377,7 @@ ORCID_CLIENT_SECRET = '4198cf6d-cc09-4757-8fa4-186a720b5f51'
 ORCID_CLIENT_ID = 'APP-5IWTN5G13WHTGGBM'
 
 SESSION_COOKIE_NAME = 'JANEWAYSESSID'
-SESSION_SAVE_EVERY_REQUEST = False
+SESSION_SAVE_EVERY_REQUEST = True
 
 #S3_ACCESS_KEY = ''
 #S3_SECRET_KEY = ''

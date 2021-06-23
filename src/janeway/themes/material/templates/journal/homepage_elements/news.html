@@ -4,39 +4,25 @@
 
 <section>
     <div class="row">
-        <div class="col m12">
-                <h2>{% trans "Recent news" %}</h2>
+        <div class="col m8">
+                <h2 style="text-shadow: 2px 2px #fafafa">{% trans "Recent news" %}</h2>
                 {% for item in news_items %}
                     <div class="card ui-generic">
                         <h2 class="feature greybg">{{ item.title }}</h2>
 
                         <div class="card-content">
+                            {% if item.large_image_file %}
                             <img src="{% url 'news_file_download' 'id' item.id item.large_image_file.id %}" class="responsive-img" width="30%" />
+                            {% endif %}
                             <div class="">
-                                {{ item.body|safe|truncatesmart:100 }}
+                                {{ item.body|safe|truncatesmart:50 }}
                             </div>
                             </div>
-                    <div class="card-action">
-                        <a href="{% url 'core_news_item' item.pk %}">{% trans "Read More" %}</a>
+                    <div class="card-action deep-orange lighten-5">
+                        <a href="{% url 'core_news_item' item.pk %}">{% trans "Continue reading" %}</a>
                     </div>
 		    </div>
                 {% endfor %}
         </div>
     </div>
-</section>
-
-<section>
-     <h3>Social Media</h3>
-     <ul class="colorList">
-      {% for tweet in public_timeline %}
-      <li>
-         <a href="https://twitter.com/twitter/statuses/{{tweet.id}}">{{tweet.text}}</a></li>
-      {% endfor %}
-      </ul>
-     <h3>Forum Updates</h3>
-     <ul>
-       {% for item in feed.entries %}
-       <li><a href="{{ item.link }}">{{ item.title }}</a></li>
-       {% endfor %}
-     </ul>
 </section>

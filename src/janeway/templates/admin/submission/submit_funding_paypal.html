@@ -11,8 +11,8 @@
 {% endblock %}
 
 {% block body %}
-<article>
-	<div class="box">
+<div class="card">
+	<div class="card-content">
 		 {% include "submission/timeline.html" with data=article %}
 <form action="https://www.paypal.com/donate" method="post" target="_top">
 Amount to donate: <input type="input" name="amount" value=""/>	
@@ -33,10 +33,10 @@ Amount to donate: <input type="input" name="amount" value=""/>
 <div class="box">
 <form method="POST">
                         <button class="button success pull-right" type="submit" name="next_step"><i class="fa fa-check">
-                            &nbsp;</i>{% trans "Continue" %}
+                            &nbsp;</i>{% trans "Next" %}
                         </button>
 			<br>
                     </form>
 	</div>
-</article>
+</div>
 {% endblock %}

@@ -4,8 +4,10 @@
 {% block title-sub %}Management interface for {{ request.press.name }} preprints{% endblock %}
 
 {% block breadcrumbs %}
+<ul class="breadcrumbs">
     <li><a href="{% url 'core_manager_index' %}">Press Manager</a></li>
     <li>Preprint Manager</li>
+</ul>    
 {% endblock %}
 
 {% block body %}

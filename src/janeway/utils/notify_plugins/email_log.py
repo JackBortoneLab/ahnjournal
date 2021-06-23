@@ -7,7 +7,7 @@ def notify_hook(**kwargs):
     # action is a list of notification targets
     # if the "all" variable is passed, then some types of notification might act, like Slack.
     # Email, though, should only send if it's specifically an email in action, not on "all".
-    action = kwargs.pop('action', [])
+    action = kwargs.pop('action', ['email'])
 
     if 'email_log' not in action:
         # email is only sent if list of actions includes "email"

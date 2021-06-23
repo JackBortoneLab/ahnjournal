@@ -32,7 +32,7 @@ from submission import models as submission_models, forms as submission_forms
 from utils import models as util_models, ithenticate, shared, setting_handler
 
 
-@senior_editor_user_required
+@reviewer_user_required
 def home(request):
     """
     Displays a list of review articles.
@@ -40,18 +40,20 @@ def home(request):
     :return: HttpResponse
     """
     articles = submission_models.Article.objects.filter(
-        Q(stage=submission_models.STAGE_ASSIGNED) |
-        Q(stage=submission_models.STAGE_UNDER_REVIEW) |
-        Q(stage=submission_models.STAGE_UNDER_REVISION),
+        #Q(stage=submission_models.STAGE_ASSIGNED) |
+        #Q(stage=submission_models.STAGE_UNDER_REVIEW) |
+        #Q(stage=submission_models.STAGE_UNDER_REVISION) |
+        Q(stage=submission_models.STAGE_UNASSIGNED),
         journal=request.journal
     )
 
     filter = request.GET.get('filter', None)
     if filter == 'me':
-        assignments = models.EditorAssignment.objects.filter(article__journal=request.journal,
-                                                             editor=request.user)
-        assignment_article_pks = [assignment.article.pk for assignment in assignments]
-        articles = articles.filter(pk__in=assignment_article_pks)
+        #assignments = models.EditorAssignment.objects.filter(
+        #        article__journal=request.journal,
+        #       editor=request.user)
+        #assignment_article_pks = [assignment.article.pk for assignment in assignments]
+        articles = articles.filter(owner=request.user)
 
     template = 'review/home.html'
     context = {
@@ -62,7 +64,7 @@ def home(request):
     return render(request, template, context)
 
 
-@senior_editor_user_required
+@reviewer_user_required
 def unassigned(request):
     """
     Displays a list of unassigned articles.

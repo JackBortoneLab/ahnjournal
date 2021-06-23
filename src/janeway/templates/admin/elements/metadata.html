@@ -1,13 +1,16 @@
 {% load settings %}
 {% load roles %}
 {% load static from staticfiles %}
+{% load foundation %}
 
 {% user_has_role request 'editor' as user_is_editor %}
 {% user_has_role request 'production' as user_is_production %}
 
 {% if user_is_editor or user_is_production %}
-    <a class="float-right" href="{% url 'edit_metadata' article.pk %}?return={{ request.path|urlencode }}"><i
-            class="fa fa-edit">&nbsp;</i>Edit</a>
+    <span><a class="float-right" href="{% url 'edit_metadata' article.pk %}?return={{ request.path|urlencode }}"><i
+                                 class="fa fa-edit"></i>Edit Article</a></span>
+    <span><a class="float-right modal-trigger" href="{% url 'delete_article' article.pk %}"><i class="fa fa-trash"></i>Delete</a>
+    </span>
 {% endif %}
 <h4>{{ article.title|safe }}</h4>
 {% if article.subtitle %}<h4>{{ article.subtitle|safe }}</h4>{% endif %}
@@ -19,7 +22,11 @@
         <th>Language</th>
     </tr>
     <tr>
+        {% if article.section.name %}
         <td>{{ article.section.name }}</td>
+        {% else %}
+        <td>Unknown subject</td>
+        {% endif %}
         {% if article.correspondence_author %}
         <td>{{ article.correspondence_author.full_name }} <a onclick="return popitup('{% url 'send_user_email_article' article.correspondence_author.pk article.pk %}')"><i class="fa fa-envelope">&nbsp;</i></a></td>
         {% else %}
